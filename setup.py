@@ -12,7 +12,7 @@ def readme():
 
 setup(name='rockfinder',
       version=__version__,
-      description='CL-util to check the Minor Planet Centre's MPChecker for moving objects at a given sky location and epoch. Returns either the name of the closest object, or a non-match.',
+      description="CL-util to check the Minor Planet Centre's MPChecker for moving objects at a given sky location and epoch. Returns either the name of the closest object, or a non-match.",
       long_description=readme(),
       classifiers=[
           'Development Status :: 4 - Beta',
@@ -20,7 +20,7 @@ setup(name='rockfinder',
           'Programming Language :: Python :: 2.7',
           'Topic :: Utilities',
       ],
-      keywords=['terminal', 'astronomy','tool'],
+      keywords=['terminal', 'astronomy', 'tool'],
       url='https://github.com/thespacedoctor/rockfinder',
       download_url='https://github.com/thespacedoctor/rockfinder/archive/v%(__version__)s.zip' % locals(
       ),
@@ -28,8 +28,11 @@ setup(name='rockfinder',
       author_email='davidrobertyoung@gmail.com',
       license='MIT',
       packages=['rockfinder'],
+      include_package_data=True,
       install_requires=[
           'pyyaml',
+          'requests',
+          'fundamentals'
       ],
       test_suite='nose.collector',
       tests_require=['nose', 'nose-cover3'],

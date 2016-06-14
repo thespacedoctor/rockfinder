@@ -6,7 +6,7 @@ from fundamentals import utKit
 class utKit(utKit):
 
     """
-    Override dryx utKit
+    *Override dryx utKit*
     """
     # Variable Data Atrributes
 
