@@ -1,18 +1,6 @@
 #!/usr/local/bin/python
 # encoding: utf-8
 """
-*The CL tools for rockfinder*
-
-:Author:
-    David Young
-
-:Date Created:
-    March  2, 2016
-
-.. todo::
-    
-    @review: when complete pull all general functions and classes into dryxPython
-
 Usage:
     rockfinder where [-e] [csv|md|rst|json|yaml] <objectId> <mjd>...
 
@@ -37,10 +25,6 @@ from fundamentals.renderer import list_of_dictionaries
 # from ..__init__ import *
 
 
-def tab_complete(text, state):
-    return (glob.glob(text + '*') + [None])[state]
-
-
 def main(arguments=None):
     """
     *The main function used when ``cl_utils.py`` is run as a single script from the cl, or when installed as a cl command*
@@ -54,11 +38,6 @@ def main(arguments=None):
         projectName="rockfinder"
     )
     arguments, settings, log, dbConn = su.setup()
-
-    # tab completion for raw_input
-    readline.set_completer_delims(' \t\n;')
-    readline.parse_and_bind("tab: complete")
-    readline.set_completer(tab_complete)
 
     # unpack remaining cl arguments using `exec` to setup the variable names
     # automatically

@@ -1,5 +1,5 @@
 import os
-import nose
+import nose2
 import shutil
 import unittest
 import yaml

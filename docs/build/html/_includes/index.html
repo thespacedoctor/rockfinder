@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; rockfinder v0.1 documentation</title>
+  <title>Installation &mdash; rockfinder v0.1.1 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="rockfinder v0.1 documentation" href="../index.html"/>
+    <link rel="top" title="rockfinder v0.1.1 documentation" href="../index.html"/>
         <link rel="next" title="Subpackages" href="../autosummary.html"/>
         <link rel="prev" title="rockfinder" href="../index.html"/> 
 
@@ -77,7 +77,7 @@
             
             
               <div class="version">
-                v0.1
+                v0.1.1
               </div>
             
           
@@ -224,11 +224,17 @@ are welcomed!</p>
 </div>
 <div class="section" id="command-line-usage">
 <h1>Command-Line Usage<a class="headerlink" href="#command-line-usage" title="Permalink to this headline">  ∞</a></h1>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<ul class="last simple">
-<li>add usage</li>
-</ul>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>Usage:
+    rockfinder where <span class="o">[</span>-e<span class="o">]</span> <span class="o">[</span>csv<span class="p">|</span>md<span class="p">|</span>rst<span class="p">|</span>json<span class="p">|</span>yaml<span class="o">]</span> &lt;objectId&gt; &lt;mjd&gt;...
+
+    csv                   output results in csv format
+    md                    output results as a markdown table
+    rst                   output results as a restructured text table
+    json                  output results in json format
+    yaml                  output results in yaml format
+    -e, --extra           <span class="k">return</span> extra ephemeris info <span class="o">(</span>verbose<span class="o">)</span>
+    -h, --help            show this <span class="nb">help</span> message
+</pre></div>
 </div>
 </div>
 <div class="section" id="documentation">
@@ -237,17 +243,75 @@ are welcomed!</p>
 </div>
 <div class="section" id="command-line-tutorial">
 <h1>Command-Line Tutorial<a class="headerlink" href="#command-line-tutorial" title="Permalink to this headline">  ∞</a></h1>
-<p>Before you begin using rockfinder you will need to populate some custom settings within the rockfinder settings file.</p>
-<p>To setup the default settings file at <code class="docutils literal"><span class="pre">~/.config/rockfinder/rockfinder.yaml</span></code> run the command:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>rockfinder init
+<p>Let’s say we want to generate an ephemeris for Ceres. We can either identify Ceres with its human-friendly name, its MPC number (<code class="xref py py-obj docutils literal"><span class="pre">1</span></code>) or its MPC packed format (<code class="xref py py-obj docutils literal"><span class="pre">00001</span></code>). I can grab an ephemeris from the JPL-Horizons for MJD=57967.564 with either of the following commands:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>rockfinder where <span class="m">1</span> <span class="m">57967</span>.546
+rockfinder where ceres <span class="m">57967</span>.546
+rockfinder where <span class="m">00001</span> <span class="m">57967</span>.546
 </pre></div>
 </div>
-<p>This should create and open the settings file; follow the instructions in the file to populate the missing settings values (usually given an <code class="docutils literal"><span class="pre">XXX</span></code> placeholder).</p>
-<div class="admonition-todo admonition" id="index-1">
-<p class="first admonition-title">Todo</p>
-<ul class="last simple">
-<li>add tutorial</li>
-</ul>
+<p>This returns the ephemeris in a neatly formatted table:</p>
+<div class="highlight-text"><div class="highlight"><pre><span></span>+-------------+-----------+----------+----------------+-----------------+---------------------+----------------------+---------------+------------------------+--------------------+--------------+
+| mjd         | ra_deg    | dec_deg  | ra_3sig_error  | dec_3sig_error  | ra_arcsec_per_hour  | dec_arcsec_per_hour  | apparent_mag  | heliocentric_distance  | observer_distance  | phase_angle  |
++-------------+-----------+----------+----------------+-----------------+---------------------+----------------------+---------------+------------------------+--------------------+--------------+
+| 57967.5460  | 100.2386  | 24.2143  | 0.0000         | 0.0000          | 61.8963             | 0.8853               | 8.9100        | 2.6668                 | 3.4864             | 11.2662      |
++-------------+-----------+----------+----------------+-----------------+---------------------+----------------------+---------------+------------------------+--------------------+--------------+
+</pre></div>
+</div>
+<p>To make the results returned from Horizons a little more verbose, use the <code class="xref py py-obj docutils literal"><span class="pre">-e</span></code> flag:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>rockfinder where -e ceres <span class="m">57967</span>.546
+</pre></div>
+</div>
+<div class="highlight-text"><div class="highlight"><pre><span></span>+-------------+-----------+----------+----------------+-----------------+---------------------+----------------------+---------------+------------------------+----------------------+--------------------+------------------+--------------+---------------------+---------------------+-----------------------+-----------------------+----------------------------------+----------------------------+---------------------------+
+| mjd         | ra_deg    | dec_deg  | ra_3sig_error  | dec_3sig_error  | ra_arcsec_per_hour  | dec_arcsec_per_hour  | apparent_mag  | heliocentric_distance  | heliocentric_motion  | observer_distance  | observer_motion  | phase_angle  | true_anomaly_angle  | surface_brightness  | sun_obs_target_angle  | sun_target_obs_angle  | apparent_motion_relative_to_sun  | phase_angle_bisector_long  | phase_angle_bisector_lat  |
++-------------+-----------+----------+----------------+-----------------+---------------------+----------------------+---------------+------------------------+----------------------+--------------------+------------------+--------------+---------------------+---------------------+-----------------------+-----------------------+----------------------------------+----------------------------+---------------------------+
+| 57967.5460  | 100.2386  | 24.2143  | 0.0000         | 0.0000          | 61.8963             | 0.8853               | 8.9100        | 2.6668                 | -1.2317              | 3.4864             | -13.2972         | 11.2662      | 294.8837            | 6.5600              | 30.8803               | 11.2614               | L                                | 93.6995                    | 1.2823                    |
++-------------+-----------+----------+----------------+-----------------+---------------------+----------------------+---------------+------------------------+----------------------+--------------------+------------------+--------------+---------------------+---------------------+-----------------------+-----------------------+----------------------------------+----------------------------+---------------------------+
+</pre></div>
+</div>
+<p>To return an ephemeris covering multiple epoch, simply append extra MJD values to the command:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>rockfinder where ceres <span class="m">57967</span>.546 <span class="m">57970</span>.146 <span class="m">57975</span>.683 <span class="m">57982</span>.256 <span class="m">57994</span>.547
+</pre></div>
+</div>
+<div class="highlight-text"><div class="highlight"><pre><span></span>+-------------+-----------+----------+----------------+-----------------+---------------------+----------------------+---------------+------------------------+--------------------+--------------+
+| mjd         | ra_deg    | dec_deg  | ra_3sig_error  | dec_3sig_error  | ra_arcsec_per_hour  | dec_arcsec_per_hour  | apparent_mag  | heliocentric_distance  | observer_distance  | phase_angle  |
++-------------+-----------+----------+----------------+-----------------+---------------------+----------------------+---------------+------------------------+--------------------+--------------+
+| 57967.5460  | 100.2386  | 24.2143  | 0.0000         | 0.0000          | 61.8963             | 0.8853               | 8.9100        | 2.6668                 | 3.4864             | 11.2662      |
+| 57970.1460  | 101.4080  | 24.2238  | 0.0000         | 0.0000          | 61.6860             | -0.0088              | 8.9100        | 2.6649                 | 3.4666             | 11.7406      |
+| 57975.6830  | 103.8887  | 24.2210  | 0.0000         | 0.0000          | 60.6418             | -0.3915              | 8.9200        | 2.6610                 | 3.4221             | 12.7383      |
+| 57982.2560  | 106.8029  | 24.1784  | 0.0000         | 0.0000          | 60.9023             | -1.6280              | 8.9200        | 2.6565                 | 3.3653             | 13.8893      |
+| 57994.5470  | 112.1475  | 24.0019  | 0.0000         | 0.0000          | 58.6741             | -2.6660              | 8.9100        | 2.6481                 | 3.2476             | 15.9324      |
++-------------+-----------+----------+----------------+-----------------+---------------------+----------------------+---------------+------------------------+--------------------+--------------+
+</pre></div>
+</div>
+<p>The command-line version of rockfinder has the ability to output the ephemeris results in various formats (csv, json, markdown table, restructured text table, yaml, ascii table). State an output format to render the results:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>rockfinder where -e json ceres <span class="m">57967</span>.546
+</pre></div>
+</div>
+<div class="highlight-text"><div class="highlight"><pre><span></span>[
+    {
+        &quot;apparent_mag&quot;: 8.91,
+        &quot;apparent_motion_relative_to_sun&quot;: &quot;L&quot;,
+        &quot;dec_3sig_error&quot;: 0.0,
+        &quot;dec_arcsec_per_hour&quot;: 0.885313,
+        &quot;dec_deg&quot;: 24.2142655,
+        &quot;heliocentric_distance&quot;: 2.666789121428,
+        &quot;heliocentric_motion&quot;: -1.231677,
+        &quot;mjd&quot;: 57967.54600000009,
+        &quot;observer_distance&quot;: 3.48635600851733,
+        &quot;observer_motion&quot;: -13.2971761,
+        &quot;phase_angle&quot;: 11.2662,
+        &quot;phase_angle_bisector_lat&quot;: 1.2823,
+        &quot;phase_angle_bisector_long&quot;: 93.6995,
+        &quot;ra_3sig_error&quot;: 0.0,
+        &quot;ra_arcsec_per_hour&quot;: 61.89635,
+        &quot;ra_deg&quot;: 100.2386357,
+        &quot;sun_obs_target_angle&quot;: 30.8803,
+        &quot;sun_target_obs_angle&quot;: 11.2614,
+        &quot;surface_brightness&quot;: 6.56,
+        &quot;true_anomaly_angle&quot;: 294.8837
+    }
+]
+</pre></div>
 </div>
 </div>
 
@@ -295,7 +359,7 @@ are welcomed!</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'v0.1',
+            VERSION:'v0.1.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

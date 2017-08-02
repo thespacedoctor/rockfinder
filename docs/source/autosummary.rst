@@ -36,5 +36,4 @@ Functions
    :toctree: _autosummary
    :nosignatures:
 
-   rockfinder.whereami
-   rockfinder.cl_utils.tab_complete 
+   rockfinder.whereami 

@@ -10,7 +10,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Command-Line Usage &mdash; rockfinder v0.1 documentation</title>
+  <title>Command-Line Usage &mdash; rockfinder v0.1.1 documentation</title>
   
 
   
@@ -43,7 +43,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="rockfinder v0.1 documentation" href="../index.html"/> 
+    <link rel="top" title="rockfinder v0.1.1 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -75,7 +75,7 @@
             
             
               <div class="version">
-                v0.1
+                v0.1.1
               </div>
             
           
@@ -177,11 +177,17 @@
             
   <div class="section" id="command-line-usage">
 <h1>Command-Line Usage<a class="headerlink" href="#command-line-usage" title="Permalink to this headline">  ∞</a></h1>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<ul class="last simple">
-<li>add usage</li>
-</ul>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>Usage:
+    rockfinder where <span class="o">[</span>-e<span class="o">]</span> <span class="o">[</span>csv<span class="p">|</span>md<span class="p">|</span>rst<span class="p">|</span>json<span class="p">|</span>yaml<span class="o">]</span> &lt;objectId&gt; &lt;mjd&gt;...
+
+    csv                   output results in csv format
+    md                    output results as a markdown table
+    rst                   output results as a restructured text table
+    json                  output results in json format
+    yaml                  output results in yaml format
+    -e, --extra           <span class="k">return</span> extra ephemeris info <span class="o">(</span>verbose<span class="o">)</span>
+    -h, --help            show this <span class="nb">help</span> message
+</pre></div>
 </div>
 </div>
 
@@ -220,7 +226,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'v0.1',
+            VERSION:'v0.1.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
