@@ -1,0 +1,392 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>rockfinder.whereami &mdash; rockfinder v0.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/dryx.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="rockfinder v0.1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> rockfinder
+          
+
+          
+            
+            <img src="../../_static/thespacedoctor_icon_white_circle.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_includes/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_includes/index.html#command-line-usage">Command-Line Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_includes/index.html#documentation">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_includes/index.html#command-line-tutorial">Command-Line Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Python Package Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../autosummary.html">Subpackages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autosummary.html#modules">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autosummary.html#classes">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autosummary.html#functions">Functions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">rockfinder</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>rockfinder.whereami</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for rockfinder.whereami</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/local/bin/python</span>
+<span class="c1"># encoding: utf-8</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">*Given a known solar-system object ID (human-readable name, MPC number or MPC packed format) and one or more specific epochs, return the calculated ephemerides*</span>
+
+<span class="sd">:Author:</span>
+<span class="sd">    David Young</span>
+
+<span class="sd">:Date Created:</span>
+<span class="sd">    August  1, 2017</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">################# GLOBAL IMPORTS ####################</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TERM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;vt100&#39;</span>
+<span class="kn">from</span> <span class="nn">fundamentals</span> <span class="k">import</span> <span class="n">tools</span>
+<span class="kn">from</span> <span class="nn">fundamentals.renderer</span> <span class="k">import</span> <span class="n">list_of_dictionaries</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+
+<div class="viewcode-block" id="whereami"><a class="viewcode-back" href="../../_autosummary/rockfinder.whereami.html#rockfinder.whereami.whereami">[docs]</a><span class="k">def</span> <span class="nf">whereami</span><span class="p">(</span>
+        <span class="n">log</span><span class="p">,</span>
+        <span class="n">objectId</span><span class="p">,</span>
+        <span class="n">mjd</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given a known solar-system object ID (human-readable name, MPC number or MPC packed format) and one or more specific epochs, return the calculated ephemerides </span>
+
+<span class="sd">    **Key Arguments:**</span>
+<span class="sd">        - ``log`` -- logger</span>
+<span class="sd">        - ``objectId`` -- human-readable name, MPC number or MPC packed format id of the solar-system object</span>
+<span class="sd">        - ``mjd`` -- a single MJD, or a list of up to 10,000 MJDs to generate an ephemeris for</span>
+<span class="sd">        - ``verbose`` -- return extra information with each ephemeris</span>
+
+<span class="sd">    **Return:**</span>
+<span class="sd">        - ``resultList`` -- a list of ordered dictionaries containing the returned ephemerides</span>
+
+<span class="sd">    **Usage:**</span>
+
+<span class="sd">        To generate a an ephemeris for a single epoch run:</span>
+
+<span class="sd">        .. code-block:: python </span>
+
+<span class="sd">            from rockfinder import whereami</span>
+<span class="sd">            eph = whereami(</span>
+<span class="sd">                log=log,</span>
+<span class="sd">                objectId=1,</span>
+<span class="sd">                mjd=57916.,</span>
+<span class="sd">            )</span>
+
+<span class="sd">        or to generate an ephemeris for multiple epochs:</span>
+
+<span class="sd">        .. code-block:: python </span>
+
+<span class="sd">            from rockfinder import whereami</span>
+<span class="sd">            eph = whereami(</span>
+<span class="sd">                log=log,</span>
+<span class="sd">                objectId=&quot;ceres&quot;,</span>
+<span class="sd">                mjd=[57916.1,57917.234,57956.34523]</span>
+<span class="sd">                verbose=True</span>
+<span class="sd">            )</span>
+
+<span class="sd">        Note by passing `verbose=True` the essential ephemeris data is supplimented with some extra data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;starting the ``whereami`` function&#39;</span><span class="p">)</span>
+
+    <span class="c1"># MAKE SURE MJDs ARE IN A LIST</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mjd</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">mjd</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">mjd</span><span class="p">)]</span>
+
+    <span class="n">mjd</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">mjd</span><span class="p">))</span>
+
+    <span class="c1"># FIX THE COMMAND FOR NUMBERED OBJECTS</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">objectId</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">objectId</span><span class="p">)</span>
+        <span class="n">objectId</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%(objectId)s</span><span class="s2">;&quot;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://ssd.jpl.nasa.gov/horizons_batch.cgi&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;COMMAND&quot;</span><span class="p">:</span> <span class="n">objectId</span><span class="p">,</span>
+                <span class="s2">&quot;OBJ_DATA&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;NO&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;MAKE_EPHEM&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;YES&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;TABLE_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;OBS&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;CENTER&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;T05&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;TLIST&quot;</span><span class="p">:</span> <span class="n">mjd</span><span class="p">,</span>
+                <span class="s2">&quot;QUANTITIES&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;1,3,9,19,20,23,24,36,41,43&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;REF_SYSTEM&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;J2000&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;CAL_FORMAT&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;JD&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ANG_FORMAT&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;DEG&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;APPARENT&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;REFRACTED&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;TIME_DIGITS&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;FRACSEC&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;TIME_ZONE&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;+00:00&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;RANGE_UNITS&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;AU&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;SUPPRESS_RANGE_RATE&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;NO&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;EXTRA_PREC&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;YES&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;CSV_FORMAT&quot;</span><span class="p">:</span> <span class="s2">&quot;&#39;YES&#39;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;batch&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+    <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">RequestException</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;HTTP Request failed&#39;</span><span class="p">)</span>
+
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;\$\$SOE\n(.*?)\n\$\$EOE&#39;</span><span class="p">,</span>
+        <span class="n">result</span><span class="p">,</span>
+        <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">S</span>  <span class="c1"># re.S</span>
+    <span class="p">)</span>
+
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;jd&quot;</span><span class="p">,</span> <span class="s2">&quot;solar_presence&quot;</span><span class="p">,</span> <span class="s2">&quot;lunar_presence&quot;</span><span class="p">,</span>  <span class="s2">&quot;ra_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;dec_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;ra_arcsec_per_hour&quot;</span><span class="p">,</span> <span class="s2">&quot;dec_arcsec_per_hour&quot;</span><span class="p">,</span>  <span class="s2">&quot;apparent_mag&quot;</span><span class="p">,</span> <span class="s2">&quot;surface_brightness&quot;</span><span class="p">,</span> <span class="s2">&quot;heliocentric_distance&quot;</span><span class="p">,</span> <span class="s2">&quot;heliocentric_motion&quot;</span><span class="p">,</span> <span class="s2">&quot;observer_distance&quot;</span><span class="p">,</span> <span class="s2">&quot;observer_motion&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sun_obs_target_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;apparent_motion_relative_to_sun&quot;</span><span class="p">,</span>  <span class="s2">&quot;sun_target_obs_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;ra_3sig_error&quot;</span><span class="p">,</span> <span class="s2">&quot;dec_3sig_error&quot;</span><span class="p">,</span> <span class="s2">&quot;true_anomaly_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;phase_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;phase_angle_bisector_long&quot;</span><span class="p">,</span> <span class="s2">&quot;phase_angle_bisector_lat&quot;</span><span class="p">]</span>
+
+    <span class="n">resultList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+        <span class="n">objectDict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="n">objectDict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="n">objectDict</span><span class="p">[</span><span class="s2">&quot;mjd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">objectDict</span><span class="p">[</span><span class="s2">&quot;jd&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mf">2400000.5</span>
+
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mjd&quot;</span><span class="p">,</span> <span class="s2">&quot;ra_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;dec_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;ra_3sig_error&quot;</span><span class="p">,</span> <span class="s2">&quot;dec_3sig_error&quot;</span><span class="p">,</span> <span class="s2">&quot;ra_arcsec_per_hour&quot;</span><span class="p">,</span>  <span class="s2">&quot;dec_arcsec_per_hour&quot;</span><span class="p">,</span> <span class="s2">&quot;apparent_mag&quot;</span><span class="p">,</span>  <span class="s2">&quot;heliocentric_distance&quot;</span><span class="p">,</span> <span class="s2">&quot;heliocentric_motion&quot;</span><span class="p">,</span> <span class="s2">&quot;observer_distance&quot;</span><span class="p">,</span> <span class="s2">&quot;observer_motion&quot;</span><span class="p">,</span> <span class="s2">&quot;phase_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;true_anomaly_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;surface_brightness&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;sun_obs_target_angle&quot;</span><span class="p">,</span>  <span class="s2">&quot;sun_target_obs_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;apparent_motion_relative_to_sun&quot;</span><span class="p">,</span> <span class="s2">&quot;phase_angle_bisector_long&quot;</span><span class="p">,</span> <span class="s2">&quot;phase_angle_bisector_lat&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mjd&quot;</span><span class="p">,</span> <span class="s2">&quot;ra_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;dec_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;ra_3sig_error&quot;</span><span class="p">,</span> <span class="s2">&quot;dec_3sig_error&quot;</span><span class="p">,</span> <span class="s2">&quot;ra_arcsec_per_hour&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;dec_arcsec_per_hour&quot;</span><span class="p">,</span> <span class="s2">&quot;apparent_mag&quot;</span><span class="p">,</span>  <span class="s2">&quot;heliocentric_distance&quot;</span><span class="p">,</span> <span class="s2">&quot;observer_distance&quot;</span><span class="p">,</span> <span class="s2">&quot;phase_angle&quot;</span><span class="p">]</span>
+
+        <span class="n">orderDict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">({})</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+            <span class="n">orderDict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">objectDict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">resultList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orderDict</span><span class="p">)</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;completed the ``whereami`` function&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">resultList</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Dave Young.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'v0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

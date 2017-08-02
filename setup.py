@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 
 moduleDirectory = os.path.dirname(os.path.realpath(__file__))
@@ -6,13 +6,29 @@ exec(open(moduleDirectory + "/rockfinder/__version__.py").read())
 
 
 def readme():
-    with open(moduleDirectory + '/README.md') as f:
+    with open(moduleDirectory + '/README.rst') as f:
         return f.read()
 
+install_requires = [
+    'pyyaml',
+    'rockfinder',
+    'fundamentals'
+]
 
-setup(name='rockfinder',
+# READ THE DOCS SERVERS
+exists = os.path.exists("/home/docs/")
+if exists:
+    c_exclude_list = ['healpy', 'astropy',
+                      'numpy', 'sherlock', 'wcsaxes', 'HMpTy', 'ligo-gracedb']
+    for e in c_exclude_list:
+        try:
+            install_requires.remove(e)
+        except:
+            pass
+
+setup(name="rockfinder",
       version=__version__,
-      description="CL-util to check the Minor Planet Centre's MPChecker for moving objects at a given sky location and epoch. Returns either the name of the closest object, or a non-match.",
+      description="A python package and command-line tools to A python package and command-line suite to generate solar-system body ephemerides and to determine if specific transient dections are in fact known asteroids",
       long_description=readme(),
       classifiers=[
           'Development Status :: 4 - Beta',
@@ -20,23 +36,19 @@ setup(name='rockfinder',
           'Programming Language :: Python :: 2.7',
           'Topic :: Utilities',
       ],
-      keywords=['terminal', 'astronomy', 'tool'],
+      keywords=['asteroid, ephemeris, astronomy,solar-system, command-line'],
       url='https://github.com/thespacedoctor/rockfinder',
       download_url='https://github.com/thespacedoctor/rockfinder/archive/v%(__version__)s.zip' % locals(
       ),
       author='David Young',
       author_email='davidrobertyoung@gmail.com',
       license='MIT',
-      packages=['rockfinder'],
+      packages=find_packages(),
       include_package_data=True,
-      install_requires=[
-          'pyyaml',
-          'requests',
-          'fundamentals'
-      ],
-      test_suite='nose.collector',
-      tests_require=['nose', 'nose-cover3'],
-      # entry_points={
-      #     'console_scripts': ['rockfinder=rockfinder.cl_utils:main'],
-      # },
+      install_requires=install_requires,
+      test_suite='nose2.collector.collector',
+      tests_require=['nose2', 'cov-core'],
+      entry_points={
+          'console_scripts': ['rockfinder=rockfinder.cl_utils:main'],
+      },
       zip_safe=False)
