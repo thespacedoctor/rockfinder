@@ -71,6 +71,7 @@ def whereami(
 
     mjd = (" ").join(map(str, mjd))
 
+    requestId = objectId
     # FIX THE COMMAND FOR NUMBERED OBJECTS
     try:
         objectId = int(objectId)
@@ -107,6 +108,13 @@ def whereami(
         print('HTTP Request failed')
 
     match = re.search(
+        r'Target body name:\s(.*?)\{',
+        result,
+        flags=re.S  # re.S
+    )
+    horizonsId = match.group(1).replace("(", "").replace(")", "").strip()
+
+    match = re.search(
         r'\$\$SOE\n(.*?)\n\$\$EOE',
         result,
         flags=re.S  # re.S
@@ -129,12 +137,14 @@ def whereami(
             objectDict[k] = v
 
         objectDict["mjd"] = objectDict["jd"] - 2400000.5
+        objectDict["objectId"] = horizonsId
+        objectDict["requestId"] = requestId
 
         if verbose == True:
-            order = ["mjd", "ra_deg", "dec_deg", "ra_3sig_error", "dec_3sig_error", "ra_arcsec_per_hour",  "dec_arcsec_per_hour", "apparent_mag",  "heliocentric_distance", "heliocentric_motion", "observer_distance", "observer_motion", "phase_angle", "true_anomaly_angle", "surface_brightness",
+            order = ["requestId", "objectId", "mjd", "ra_deg", "dec_deg", "ra_3sig_error", "dec_3sig_error", "ra_arcsec_per_hour",  "dec_arcsec_per_hour", "apparent_mag",  "heliocentric_distance", "heliocentric_motion", "observer_distance", "observer_motion", "phase_angle", "true_anomaly_angle", "surface_brightness",
                      "sun_obs_target_angle",  "sun_target_obs_angle", "apparent_motion_relative_to_sun", "phase_angle_bisector_long", "phase_angle_bisector_lat"]
         else:
-            order = ["mjd", "ra_deg", "dec_deg", "ra_3sig_error", "dec_3sig_error", "ra_arcsec_per_hour",
+            order = ["requestId", "objectId", "mjd", "ra_deg", "dec_deg", "ra_3sig_error", "dec_3sig_error", "ra_arcsec_per_hour",
                      "dec_arcsec_per_hour", "apparent_mag",  "heliocentric_distance", "observer_distance", "phase_angle"]
 
         orderDict = collections.OrderedDict({})
