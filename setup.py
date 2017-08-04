@@ -13,8 +13,7 @@ install_requires = [
     'pyyaml',
     'rockfinder',
     'fundamentals',
-    'gevent',
-    'requests'
+    'grequests'
 ]
 
 # READ THE DOCS SERVERS
