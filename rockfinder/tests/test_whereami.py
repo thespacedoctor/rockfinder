@@ -70,6 +70,25 @@ class test_whereami(unittest.TestCase):
         )
         print this
 
+    def test_whereami_function02(self):
+
+        from rockfinder import whereami
+        this = whereami(
+            log=log,
+            objectId=[1, 2, 3, 4, 5],
+            mjd=57916.,
+            verbose=True
+        )
+        print this
+
+        # from rockfinder import whereami
+        # this = whereami(
+        #     log=log,
+        #     objectId=1,
+        #     mjd=[57916., 57916.1, 57916.2]
+        # )
+        # print this
+
     def test_whereami_function_exception(self):
 
         from rockfinder import whereami

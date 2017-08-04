@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # rockfinder documentation build configuration file, created by
-# sphinx-quickstart on Wed Aug  2 13:54:46 2017.
+# sphinx-quickstart on Fri Aug  4 16:15:25 2017.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
