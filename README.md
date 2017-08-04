@@ -9,6 +9,8 @@ rockfinder
 ephemerides and to determine if specific transient dections are in fact
 known asteroids*.
 
+<img src="https://farm5.staticflickr.com/4383/36370391855_f8c698563e_o.png" alt="image" width="600" />
+
 Command-Line Usage
 ==================
 
