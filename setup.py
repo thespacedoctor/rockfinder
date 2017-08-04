@@ -12,7 +12,9 @@ def readme():
 install_requires = [
     'pyyaml',
     'rockfinder',
-    'fundamentals'
+    'fundamentals',
+    'gevent',
+    'requests'
 ]
 
 # READ THE DOCS SERVERS
