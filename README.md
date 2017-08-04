@@ -5,13 +5,9 @@ rockfinder
 
 [![Coverage Status](https://cdn.rawgit.com/thespacedoctor/rockfinder/master/coverage.svg)](https://cdn.rawgit.com/thespacedoctor/rockfinder/master/htmlcov/index.html)
 
-![][icon]
-
-[icon]: ./rockfinder-icon.png
-
-*A python package and command-line tools for A python package and
-command-line suite to generate solar-system body ephemerides and to
-determine if specific transient dections are in fact known asteroids*.
+*A python package and command-line suite to generate solar-system body
+ephemerides and to determine if specific transient dections are in fact
+known asteroids*.
 
 Command-Line Usage
 ==================
