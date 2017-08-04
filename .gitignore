@@ -23,6 +23,8 @@ _ignore_*
 /*.egg-info
 /*.egg
 
+/build/
+
 package_description
 
 ## Apache logs
