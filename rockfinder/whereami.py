@@ -149,7 +149,20 @@ def whereami(
         if not match:
             log.warning(
                 "Horizons could not find a match for `%(requestId)s`" % locals())
-            print result.url
+            objectDict = {}
+            for k in keys:
+                v = None
+                objectDict[k] = v
+
+            objectDict["objectId"] = requestId + " - NOT FOUND"
+            objectDict["requestId"] = requestId
+            objectDict["mjd"] = None
+
+            orderDict = collections.OrderedDict({})
+            for i in order:
+                orderDict[i] = objectDict[i]
+
+            resultList.append(orderDict)
             continue
 
         horizonsId = match.group(1).replace("(", "").replace(")", "").strip()
