@@ -61,8 +61,8 @@ def main(arguments=None):
         (startTime,))
 
     # CALL FUNCTIONS/OBJECTS
-    from rockfinder import whereami
-    eph = whereami(
+    from rockfinder import jpl_horizons_ephemeris
+    eph = jpl_horizons_ephemeris(
         log=log,
         objectId=objectId,
         mjd=mjd,

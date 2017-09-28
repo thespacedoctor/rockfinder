@@ -1,1 +1,1 @@
-import test_whereami
+import test_jpl_horizons_ephemeris
