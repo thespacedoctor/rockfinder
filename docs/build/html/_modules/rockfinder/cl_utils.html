@@ -240,8 +240,8 @@
         <span class="p">(</span><span class="n">startTime</span><span class="p">,))</span>
 
     <span class="c1"># CALL FUNCTIONS/OBJECTS</span>
-    <span class="kn">from</span> <span class="nn">rockfinder</span> <span class="k">import</span> <span class="n">whereami</span>
-    <span class="n">eph</span> <span class="o">=</span> <span class="n">whereami</span><span class="p">(</span>
+    <span class="kn">from</span> <span class="nn">rockfinder</span> <span class="k">import</span> <span class="n">jpl_horizons_ephemeris</span>
+    <span class="n">eph</span> <span class="o">=</span> <span class="n">jpl_horizons_ephemeris</span><span class="p">(</span>
         <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
         <span class="n">objectId</span><span class="o">=</span><span class="n">objectId</span><span class="p">,</span>
         <span class="n">mjd</span><span class="o">=</span><span class="n">mjd</span><span class="p">,</span>

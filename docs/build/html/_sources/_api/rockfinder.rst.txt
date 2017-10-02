@@ -19,6 +19,7 @@ Submodules
 .. toctree::
 
    rockfinder.cl_utils
+   rockfinder.jpl_horizons_ephemeris
+   rockfinder.orbfit_ephemeris
    rockfinder.utKit
-   rockfinder.whereami
 
