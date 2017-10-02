@@ -2,7 +2,7 @@
 # encoding: utf-8
 """
 Usage:
-    rockfinder where [-e] [csv|md|rst|json|yaml] <objectId> <mjd>...
+    rockfinder where [-eo] [csv|md|rst|json|yaml] <objectId> <mjd>...
 
     csv                   output results in csv format
     md                    output results as a markdown table
@@ -10,6 +10,7 @@ Usage:
     json                  output results in json format
     yaml                  output results in yaml format
     -e, --extra           return extra ephemeris info (verbose)
+    -o, --orbfit          use orbfit instead of JPL to generate ephemerides (requires bespoke orbfit `ephem` executable)
     -h, --help            show this help message
 """
 ################# GLOBAL IMPORTS ####################
@@ -29,13 +30,15 @@ def main(arguments=None):
     """
     *The main function used when ``cl_utils.py`` is run as a single script from the cl, or when installed as a cl command*
     """
+
     # setup the command-line util settings
     su = tools(
         arguments=arguments,
         docString=__doc__,
         logLevel="WARNING",
         options_first=False,
-        projectName="rockfinder"
+        projectName="rockfinder",
+        defaultSettingsFile=True
     )
     arguments, settings, log, dbConn = su.setup()
 
@@ -61,17 +64,29 @@ def main(arguments=None):
         (startTime,))
 
     # CALL FUNCTIONS/OBJECTS
-    from rockfinder import jpl_horizons_ephemeris
-    eph = jpl_horizons_ephemeris(
-        log=log,
-        objectId=objectId,
-        mjd=mjd,
-        verbose=extraFlag
-    )
+    if where and orbfitFlag:
+        from rockfinder import orbfit_ephemeris
+        eph = orbfit_ephemeris(
+            log=log,
+            objectId=objectId,
+            mjd=mjd,
+            settings=settings,
+            verbose=extraFlag
+        )
+    else:
+        from rockfinder import jpl_horizons_ephemeris
+        eph = jpl_horizons_ephemeris(
+            log=log,
+            objectId=objectId,
+            mjd=mjd,
+            verbose=extraFlag
+        )
+
     dataSet = list_of_dictionaries(
         log=log,
         listOfDictionaries=eph
     )
+    # xfundamentals-render-list-of-dictionaries
 
     output = dataSet.table(filepath=None)
     if csv:
