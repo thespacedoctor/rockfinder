@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 # encoding: utf-8
 """
-*Given a known solar-system object ID (human-readable name, MPC number or MPC packed format) and one or more specific epochs, return the calculated ephemerides*
+*Given a known solar-system object ID (human-readable name, MPC number or MPC packed format) or list of names and one or more specific epochs, return the calculated ephemerides*
 
 :Author:
     David Young
@@ -30,7 +30,7 @@ def jpl_horizons_ephemeris(
 
     **Key Arguments:**
         - ``log`` -- logger
-        - ``objectId`` -- human-readable name, MPC number or MPC packed format id of the solar-system object
+        - ``objectId`` -- human-readable name, MPC number or MPC packed format id of the solar-system object or list of names
         - ``mjd`` -- a single MJD, or a list of up to 10,000 MJDs to generate an ephemeris for
         - ``verbose`` -- return extra information with each ephemeris
 
@@ -134,19 +134,14 @@ def jpl_horizons_ephemeris(
         theseparams["COMMAND"] = objectId
         paramList.append(theseparams)
 
-    print paramList
     rs = [grequests.get("https://ssd.jpl.nasa.gov/horizons_batch.cgi", params=p)
           for p in paramList]
-
-    print len(rs)
 
     def exception_handler(request, exception):
         print "Request failed"
         print exception
 
     returns = grequests.map(rs, size=1, exception_handler=exception_handler)
-
-    print returns
 
     for result, requestId in zip(returns, objectList):
         r = result.content
