@@ -25,6 +25,7 @@ def jpl_horizons_ephemeris(
         log,
         objectId,
         mjd,
+        obscode=500,
         verbose=False):
     """Given a known solar-system object ID (human-readable name, MPC number or MPC packed format) and one or more specific epochs, return the calculated ephemerides 
 
@@ -32,6 +33,7 @@ def jpl_horizons_ephemeris(
         - ``log`` -- logger
         - ``objectId`` -- human-readable name, MPC number or MPC packed format id of the solar-system object or list of names
         - ``mjd`` -- a single MJD, or a list of up to 10,000 MJDs to generate an ephemeris for
+        - ``obscode`` -- the observatory code for the ephemeris generation. Default **500** (geocentric)
         - ``verbose`` -- return extra information with each ephemeris
 
     **Return:**
@@ -39,7 +41,7 @@ def jpl_horizons_ephemeris(
 
     **Usage:**
 
-        To generate a an ephemeris for a single epoch run:
+        To generate a an ephemeris for a single epoch run, using ATLAS Haleakala as your observatory:
 
         .. code-block:: python 
 
@@ -48,6 +50,7 @@ def jpl_horizons_ephemeris(
                 log=log,
                 objectId=1,
                 mjd=57916.,
+                obscode='T05'
             )
 
         or to generate an ephemeris for multiple epochs:
@@ -102,7 +105,7 @@ def jpl_horizons_ephemeris(
         "OBJ_DATA": "'NO'",
         "MAKE_EPHEM": "'YES'",
         "TABLE_TYPE": "'OBS'",
-        "CENTER": "'T05'",
+        "CENTER": "'%(obscode)s'" % locals(),
         "TLIST": mjd,
         "QUANTITIES": "'1,3,9,19,20,23,24,36,41,43'",
         "REF_SYSTEM": "'J2000'",
@@ -179,24 +182,35 @@ def jpl_horizons_ephemeris(
             flags=re.S  # re.S
         )
 
+        keys2 = copy.deepcopy(keys)
+        order2 = copy.deepcopy(order)
+        if "S-brt," not in r:
+            keys2.remove("surface_brightness")
+            try:
+                order2.remove("surface_brightness")
+            except:
+                pass
+
         lines = match.group(1).split("\n")
         for line in lines:
+
             vals = line.split(",")
             objectDict = {}
-            for k, v in zip(keys, vals):
+            for k, v in zip(keys2, vals):
                 v = v.strip().replace("/", "")
                 try:
                     v = float(v)
                 except:
                     pass
                 objectDict[k] = v
+                print str(k) + ": " + str(v)
 
             objectDict["mjd"] = objectDict["jd"] - 2400000.5
             objectDict["objectId"] = horizonsId
             objectDict["requestId"] = requestId
 
             orderDict = collections.OrderedDict({})
-            for i in order:
+            for i in order2:
                 orderDict[i] = objectDict[i]
 
             resultList.append(orderDict)
