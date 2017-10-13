@@ -24,14 +24,16 @@ def orbfit_ephemeris(
         objectId,
         mjd,
         settings,
+        obscode=500,
         verbose=False):
-    """Given a known solar-system object ID (human-readable name or MPC number but *NOT* an MPC packed format) or list of names and one or more specific epochs, return the calculated ephemerides 
+    """Given a known solar-system object ID (human-readable name or MPC number but *NOT* an MPC packed format) or list of names and one or more specific epochs, return the calculated ephemerides
 
     **Key Arguments:**
         - ``log`` -- logger
         - ``objectId`` -- human-readable name, MPC number or solar-system object name, or list of names
         - ``mjd`` -- a single MJD, or a list MJDs to generate an ephemeris for
         - ``settings`` -- the settings dictionary for rockfinder
+        - ``obscode`` -- the observatory code for the ephemeris generation. Default **500** (geocentric)
         - ``verbose`` -- return extra information with each ephemeris
 
     **Return:**
@@ -39,20 +41,21 @@ def orbfit_ephemeris(
 
     **Usage:**
 
-        To generate a an ephemeris for a single epoch run:
+        To generate a an ephemeris for a single epoch run,using ATLAS Haleakala as your observatory:
 
-        .. code-block:: python 
+        .. code-block:: python
 
             from rockfinder import orbfit_ephemeris
             eph = orbfit_ephemeris(
                 log=log,
                 objectId=1,
+                obscode="T05"
                 mjd=57916.,
             )
 
         or to generate an ephemeris for multiple epochs:
 
-        .. code-block:: python 
+        .. code-block:: python
 
             from rockfinder import orbfit_ephemeris
             eph = orbfit_ephemeris(
@@ -66,7 +69,7 @@ def orbfit_ephemeris(
 
         It's also possible to pass in an array of object IDs:
 
-        .. code-block:: python 
+        .. code-block:: python
 
             from rockfinder import orbfit_ephemeris
             eph = orbfit_ephemeris(
@@ -91,29 +94,23 @@ def orbfit_ephemeris(
     ephem = settings["path to ephem binary"]
     home = expanduser("~")
 
-    # CHECK ASTORB IN CONFIG DIR
-    exists = os.path.exists(
-        "%(home)s/.config/rockfinder/astorb.dat" % locals())
-    if not exists:
-        log.warning(
-            'Please make sure you have an up-to-date astorb.dat orbital elements file in `"%(home)s/.config/rockfinder`' % locals())
-        sys.exit(0)
-
     results = []
     for o in objectList:
         for m in mjdList:
-
-            cmd = """%(ephem)s T05 %(m)s '%(o)s'""" % locals()
-            print cmd
-            p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True,
-                      cwd="%(home)s/.config/rockfinder" % locals())
+            if "'" in o:
+                cmd = """%(ephem)s %(obscode)s %(m)s "%(o)s" """ % locals()
+            else:
+                cmd = """%(ephem)s %(obscode)s %(m)s '%(o)s'""" % locals()
+            p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
             stdout, stderr = p.communicate()
             log.debug('output: %(stdout)s' % locals())
-            if len(stderr):
+            if len(stderr) and len(stderr.split()) != 15:
+                print stderr, len(stderr.split())
                 log.error(stderr)
                 continue
             elif "!!WARNING! WARNING! WARNING! WARNING!!" in stdout:
                 log.error(stdout)
+                print "%(o)s was not found in astorb.dat" % locals()
                 continue
 
             # SPLIT RESULTS INTO LIST OF DICTIONARIES
@@ -134,11 +131,11 @@ def orbfit_ephemeris(
                 results.append(row)
 
     if verbose == True:
-        order = ["mjd", "ra_deg", "dec_deg", "apparent_mag", "observer_distance", "heliocentric_distance", "sun_obs_target_angle",
-                 "phase_angle", "galactic_latitude", "ra_arcsec_per_hour", "dec_arcsec_per_hour", "object_name", "obscode"]
+        order = ["object_name", "mjd", "ra_deg", "dec_deg", "apparent_mag", "observer_distance", "heliocentric_distance",
+                 "phase_angle",  "obscode", "sun_obs_target_angle", "galactic_latitude", "ra_arcsec_per_hour", "dec_arcsec_per_hour"]
     else:
-        order = ["mjd", "ra_deg", "dec_deg", "apparent_mag", "observer_distance", "heliocentric_distance", "sun_obs_target_angle",
-                 "phase_angle", "galactic_latitude", "ra_arcsec_per_hour", "dec_arcsec_per_hour", "object_name", "obscode"]
+        order = ["object_name", "mjd", "ra_deg", "dec_deg", "apparent_mag", "observer_distance", "heliocentric_distance",
+                 "phase_angle"]
 
     # ORDER THE RESULTS
     resultList = []

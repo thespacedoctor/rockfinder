@@ -203,7 +203,6 @@ def jpl_horizons_ephemeris(
                 except:
                     pass
                 objectDict[k] = v
-                print str(k) + ": " + str(v)
 
             objectDict["mjd"] = objectDict["jd"] - 2400000.5
             objectDict["objectId"] = horizonsId
