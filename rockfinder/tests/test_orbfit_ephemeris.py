@@ -3,8 +3,9 @@ import nose2
 import shutil
 import unittest
 import yaml
-from rockfinder import whereami, cl_utils
+from rockfinder import orbfit_ephemeris, cl_utils
 from rockfinder.utKit import utKit
+
 from fundamentals import tools
 
 su = tools(
@@ -29,10 +30,10 @@ log, dbConn, pathToInputDir, pathToOutputDir = utKit.setupModule()
 utKit.tearDownModule()
 
 # load settings
-# stream = file(
-#     pathToInputDir + "/example_settings.yaml", 'r')
-# settings = yaml.load(stream)
-# stream.close()
+stream = file(
+    pathToInputDir + "/example_settings.yaml", 'r')
+settings = yaml.load(stream)
+stream.close()
 
 import shutil
 try:
@@ -49,51 +50,46 @@ if not os.path.exists(pathToOutputDir):
 # xt-setup-unit-testing-files-and-folders
 
 
-class test_whereami(unittest.TestCase):
+class test_orbfit_ephemeris(unittest.TestCase):
 
-    def test_whereami_function(self):
+    def test_orbfit_ephemeris_function(self):
 
-        from rockfinder import whereami
-        this = whereami(
+        from rockfinder import orbfit_ephemeris
+        this = orbfit_ephemeris(
             log=log,
+            settings=settings,
             objectId=1,
             mjd=57916.,
             verbose=True
         )
         print this
 
-        from rockfinder import whereami
-        this = whereami(
+        from rockfinder import orbfit_ephemeris
+        this = orbfit_ephemeris(
             log=log,
+            settings=settings,
             objectId=1,
             mjd=[57916., 57916.1, 57916.2]
         )
         print this
 
-    def test_whereami_function02(self):
+    def test_orbfit_ephemeris_function02(self):
 
-        from rockfinder import whereami
-        this = whereami(
+        from rockfinder import orbfit_ephemeris
+        this = orbfit_ephemeris(
             log=log,
-            objectId=[1, 2, 3, 4, 5],
+            settings=settings,
+            objectId=[1, 2, 3, 4, "K10B11A"],
             mjd=57916.,
             verbose=True
         )
         print this
 
-        # from rockfinder import whereami
-        # this = whereami(
-        #     log=log,
-        #     objectId=1,
-        #     mjd=[57916., 57916.1, 57916.2]
-        # )
-        # print this
+    def test_orbfit_ephemeris_function_exception(self):
 
-    def test_whereami_function_exception(self):
-
-        from rockfinder import whereami
+        from rockfinder import orbfit_ephemeris
         try:
-            this = whereami(
+            this = orbfit_ephemeris(
                 log=log,
                 settings=settings,
                 fakeKey="break the code"
