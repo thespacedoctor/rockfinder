@@ -104,7 +104,7 @@ def jpl_horizons_ephemeris(
         "COMMAND": "",
         "OBJ_DATA": "'NO'",
         "MAKE_EPHEM": "'YES'",
-        "TABLE_TYPE": "'OBS'",
+        "TABLE_TYPE": "'OBSERVER'",
         "CENTER": "'%(obscode)s'" % locals(),
         "TLIST": mjd,
         "QUANTITIES": "'1,3,9,19,20,23,24,36,41,43'",
@@ -136,6 +136,20 @@ def jpl_horizons_ephemeris(
         theseparams = copy.deepcopy(params)
         theseparams["COMMAND"] = objectId
         paramList.append(theseparams)
+
+        # TEST THE URL
+        # try:
+        #     import requests
+        #     response = requests.get(
+        #         url="https://ssd.jpl.nasa.gov/horizons_batch.cgi",
+        #         params=theseparams,
+        #     )
+        #     content = response.content
+        #     status_code = response.status_code
+        #     print response.url
+        # except requests.exceptions.RequestException:
+        #     print('HTTP Request failed')
+        #     sys.exit(0)
 
     rs = [grequests.get("https://ssd.jpl.nasa.gov/horizons_batch.cgi", params=p)
           for p in paramList]
