@@ -186,16 +186,32 @@
             
   <div class="section" id="rockfinder-cl-utils-module">
 <h1>rockfinder.cl_utils (<em>module</em>)<a class="headerlink" href="#rockfinder-cl-utils-module" title="Permalink to this headline">  ∞</a></h1>
-<span class="target" id="module-rockfinder.cl_utils"></span><dl class="docutils">
+<span class="target" id="module-rockfinder.cl_utils"></span><p>rockfinder can be used to generate ephemerides for your favourite asteroids</p>
+<dl class="docutils">
 <dt>Usage:</dt>
-<dd><p class="first">rockfinder where [-e] [csv|md|rst|json|yaml] &lt;objectId&gt; &lt;mjd&gt;…</p>
-<p class="last">csv                   output results in csv format
+<dd>rockfinder where [-eo] [csv|md|rst|json|yaml] &lt;obscode&gt; &lt;objectId&gt; &lt;mjd&gt;</dd>
+<dt>Options:</dt>
+<dd><p class="first">obscode               the observatory code to use for ephemeris generation
+csv                   output results in csv format
 md                    output results as a markdown table
 rst                   output results as a restructured text table
 json                  output results in json format
-yaml                  output results in yaml format
--e, –extra           return extra ephemeris info (verbose)
--h, –help            show this help message</p>
+yaml                  output results in yaml format</p>
+<table class="last docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-e</span>, <span class="option">--extra</span></kbd></td>
+<td>return extra ephemeris info (verbose)</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-o</span>, <span class="option">--orbfit</span></kbd></td>
+<td>use orbfit instead of JPL to generate ephemerides (requires bespoke orbfit <code class="xref py py-obj docutils literal"><span class="pre">ephem</span></code> executable)</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>show this help message</td></tr>
+</tbody>
+</table>
 </dd>
 </dl>
 <dl class="function">

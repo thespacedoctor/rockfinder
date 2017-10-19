@@ -190,15 +190,16 @@
 </table>
 <dl class="function">
 <dt id="rockfinder.orbfit_ephemeris.orbfit_ephemeris">
-<code class="descclassname">rockfinder.orbfit_ephemeris.</code><code class="descname">orbfit_ephemeris</code><span class="sig-paren">(</span><em>log</em>, <em>objectId</em>, <em>mjd</em>, <em>settings</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rockfinder/orbfit_ephemeris.html#orbfit_ephemeris"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rockfinder.orbfit_ephemeris.orbfit_ephemeris" title="Permalink to this definition">  ∞</a></dt>
-<dd><p>Given a known solar-system object ID (human-readable name or MPC number <em>NOT</em> MPC packed format) and one or more specific epochs, return the calculated ephemerides</p>
+<code class="descclassname">rockfinder.orbfit_ephemeris.</code><code class="descname">orbfit_ephemeris</code><span class="sig-paren">(</span><em>log</em>, <em>objectId</em>, <em>mjd</em>, <em>settings</em>, <em>obscode=500</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rockfinder/orbfit_ephemeris.html#orbfit_ephemeris"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rockfinder.orbfit_ephemeris.orbfit_ephemeris" title="Permalink to this definition">  ∞</a></dt>
+<dd><p>Given a known solar-system object ID (human-readable name or MPC number but <em>NOT</em> an MPC packed format) or list of names and one or more specific epochs, return the calculated ephemerides</p>
 <dl class="docutils">
 <dt><strong>Key Arguments:</strong></dt>
 <dd><ul class="first last simple">
 <li><code class="docutils literal"><span class="pre">log</span></code> – logger</li>
-<li><code class="docutils literal"><span class="pre">objectId</span></code> – human-readable name, MPC number or solar-system object name</li>
-<li><code class="docutils literal"><span class="pre">mjd</span></code> – a single MJD, or a list of up to 10,000 MJDs to generate an ephemeris for</li>
+<li><code class="docutils literal"><span class="pre">objectId</span></code> – human-readable name, MPC number or solar-system object name, or list of names</li>
+<li><code class="docutils literal"><span class="pre">mjd</span></code> – a single MJD, or a list MJDs to generate an ephemeris for</li>
 <li><code class="docutils literal"><span class="pre">settings</span></code> – the settings dictionary for rockfinder</li>
+<li><code class="docutils literal"><span class="pre">obscode</span></code> – the observatory code for the ephemeris generation. Default <strong>500</strong> (geocentric)</li>
 <li><code class="docutils literal"><span class="pre">verbose</span></code> – return extra information with each ephemeris</li>
 </ul>
 </dd>
@@ -210,11 +211,12 @@
 </dl>
 <p><strong>Usage:</strong></p>
 <blockquote>
-<div><p>To generate a an ephemeris for a single epoch run:</p>
+<div><p>To generate a an ephemeris for a single epoch run,using ATLAS Haleakala as your observatory:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rockfinder</span> <span class="kn">import</span> <span class="n">orbfit_ephemeris</span>
 <span class="n">eph</span> <span class="o">=</span> <span class="n">orbfit_ephemeris</span><span class="p">(</span>
     <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
     <span class="n">objectId</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">obscode</span><span class="o">=</span><span class="s2">&quot;T05&quot;</span>
     <span class="n">mjd</span><span class="o">=</span><span class="mf">57916.</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>

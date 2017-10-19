@@ -180,24 +180,32 @@
 <span></span><span class="ch">#!/usr/local/bin/python</span>
 <span class="c1"># encoding: utf-8</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Usage:</span>
-<span class="sd">    rockfinder where [-e] [csv|md|rst|json|yaml] &lt;objectId&gt; &lt;mjd&gt;...</span>
+<span class="sd">rockfinder can be used to generate ephemerides for your favourite asteroids</span>
 
+<span class="sd">Usage:</span>
+<span class="sd">    rockfinder where [-eo] [csv|md|rst|json|yaml] &lt;obscode&gt; &lt;objectId&gt; &lt;mjd&gt;</span>
+
+<span class="sd">Options:</span>
+<span class="sd">    obscode               the observatory code to use for ephemeris generation</span>
 <span class="sd">    csv                   output results in csv format</span>
 <span class="sd">    md                    output results as a markdown table</span>
 <span class="sd">    rst                   output results as a restructured text table</span>
 <span class="sd">    json                  output results in json format</span>
 <span class="sd">    yaml                  output results in yaml format</span>
+
 <span class="sd">    -e, --extra           return extra ephemeris info (verbose)</span>
+<span class="sd">    -o, --orbfit          use orbfit instead of JPL to generate ephemerides (requires bespoke orbfit `ephem` executable)</span>
 <span class="sd">    -h, --help            show this help message</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="c1">################# GLOBAL IMPORTS ####################</span>
+
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TERM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;vt100&#39;</span>
 <span class="kn">import</span> <span class="nn">readline</span>
 <span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
+
 <span class="kn">from</span> <span class="nn">docopt</span> <span class="k">import</span> <span class="n">docopt</span>
 <span class="kn">from</span> <span class="nn">fundamentals</span> <span class="k">import</span> <span class="n">tools</span><span class="p">,</span> <span class="n">times</span>
 <span class="kn">from</span> <span class="nn">fundamentals.renderer</span> <span class="k">import</span> <span class="n">list_of_dictionaries</span>
@@ -208,13 +216,15 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    *The main function used when ``cl_utils.py`` is run as a single script from the cl, or when installed as a cl command*</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="c1"># setup the command-line util settings</span>
     <span class="n">su</span> <span class="o">=</span> <span class="n">tools</span><span class="p">(</span>
         <span class="n">arguments</span><span class="o">=</span><span class="n">arguments</span><span class="p">,</span>
         <span class="n">docString</span><span class="o">=</span><span class="vm">__doc__</span><span class="p">,</span>
         <span class="n">logLevel</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
         <span class="n">options_first</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">projectName</span><span class="o">=</span><span class="s2">&quot;rockfinder&quot;</span>
+        <span class="n">projectName</span><span class="o">=</span><span class="s2">&quot;rockfinder&quot;</span><span class="p">,</span>
+        <span class="n">defaultSettingsFile</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
     <span class="n">arguments</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">dbConn</span> <span class="o">=</span> <span class="n">su</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
 
@@ -240,17 +250,32 @@
         <span class="p">(</span><span class="n">startTime</span><span class="p">,))</span>
 
     <span class="c1"># CALL FUNCTIONS/OBJECTS</span>
-    <span class="kn">from</span> <span class="nn">rockfinder</span> <span class="k">import</span> <span class="n">jpl_horizons_ephemeris</span>
-    <span class="n">eph</span> <span class="o">=</span> <span class="n">jpl_horizons_ephemeris</span><span class="p">(</span>
-        <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
-        <span class="n">objectId</span><span class="o">=</span><span class="n">objectId</span><span class="p">,</span>
-        <span class="n">mjd</span><span class="o">=</span><span class="n">mjd</span><span class="p">,</span>
-        <span class="n">verbose</span><span class="o">=</span><span class="n">extraFlag</span>
-    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">where</span> <span class="ow">and</span> <span class="n">orbfitFlag</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">rockfinder</span> <span class="k">import</span> <span class="n">orbfit_ephemeris</span>
+        <span class="n">eph</span> <span class="o">=</span> <span class="n">orbfit_ephemeris</span><span class="p">(</span>
+            <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
+            <span class="n">objectId</span><span class="o">=</span><span class="n">objectId</span><span class="p">,</span>
+            <span class="n">mjd</span><span class="o">=</span><span class="n">mjd</span><span class="p">,</span>
+            <span class="n">obscode</span><span class="o">=</span><span class="n">obscode</span><span class="p">,</span>
+            <span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">extraFlag</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">rockfinder</span> <span class="k">import</span> <span class="n">jpl_horizons_ephemeris</span>
+        <span class="n">eph</span> <span class="o">=</span> <span class="n">jpl_horizons_ephemeris</span><span class="p">(</span>
+            <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
+            <span class="n">objectId</span><span class="o">=</span><span class="n">objectId</span><span class="p">,</span>
+            <span class="n">mjd</span><span class="o">=</span><span class="n">mjd</span><span class="p">,</span>
+            <span class="n">obscode</span><span class="o">=</span><span class="n">obscode</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">extraFlag</span>
+        <span class="p">)</span>
+
     <span class="n">dataSet</span> <span class="o">=</span> <span class="n">list_of_dictionaries</span><span class="p">(</span>
         <span class="n">log</span><span class="o">=</span><span class="n">log</span><span class="p">,</span>
         <span class="n">listOfDictionaries</span><span class="o">=</span><span class="n">eph</span>
     <span class="p">)</span>
+    <span class="c1"># xfundamentals-render-list-of-dictionaries</span>
 
     <span class="n">output</span> <span class="o">=</span> <span class="n">dataSet</span><span class="o">.</span><span class="n">table</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">csv</span><span class="p">:</span>
