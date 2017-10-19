@@ -13,7 +13,8 @@ install_requires = [
     'pyyaml',
     'rockfinder',
     'fundamentals',
-    'grequests'
+    'grequests',
+    'ndg-httpsclient'
 ]
 
 # READ THE DOCS SERVERS

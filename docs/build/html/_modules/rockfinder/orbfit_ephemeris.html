@@ -1,0 +1,398 @@
+
+
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>rockfinder.orbfit_ephemeris &mdash; rockfinder v0.2.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/dryx.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="rockfinder v0.2.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> rockfinder
+          
+
+          
+            
+            <img src="../../_static/rockfinder-icon.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v0.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../_includes/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_includes/index.html#command-line-usage">Command-Line Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_includes/index.html#documentation">Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_includes/index.html#command-line-tutorial">Command-Line Tutorial</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Python Package Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../autosummary.html">Subpackages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autosummary.html#modules">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autosummary.html#classes">Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../autosummary.html#functions">Functions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">rockfinder</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>rockfinder.orbfit_ephemeris</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for rockfinder.orbfit_ephemeris</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/local/bin/python</span>
+<span class="c1"># encoding: utf-8</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">*Generate Ephemerides using the `ephem` command from the Orbfit5.0 fork*</span>
+
+<span class="sd">:Author:</span>
+<span class="sd">    David Young</span>
+
+<span class="sd">:Date Created:</span>
+<span class="sd">    September 28, 2017</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1">################# GLOBAL IMPORTS ####################</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TERM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;vt100&#39;</span>
+<span class="kn">from</span> <span class="nn">fundamentals</span> <span class="k">import</span> <span class="n">tools</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">Popen</span><span class="p">,</span> <span class="n">PIPE</span><span class="p">,</span> <span class="n">STDOUT</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">expanduser</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+
+<div class="viewcode-block" id="orbfit_ephemeris"><a class="viewcode-back" href="../../_autosummary/rockfinder.orbfit_ephemeris.html#rockfinder.orbfit_ephemeris.orbfit_ephemeris">[docs]</a><span class="k">def</span> <span class="nf">orbfit_ephemeris</span><span class="p">(</span>
+        <span class="n">log</span><span class="p">,</span>
+        <span class="n">objectId</span><span class="p">,</span>
+        <span class="n">mjd</span><span class="p">,</span>
+        <span class="n">settings</span><span class="p">,</span>
+        <span class="n">obscode</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Given a known solar-system object ID (human-readable name or MPC number but *NOT* an MPC packed format) or list of names and one or more specific epochs, return the calculated ephemerides</span>
+
+<span class="sd">    **Key Arguments:**</span>
+<span class="sd">        - ``log`` -- logger</span>
+<span class="sd">        - ``objectId`` -- human-readable name, MPC number or solar-system object name, or list of names</span>
+<span class="sd">        - ``mjd`` -- a single MJD, or a list MJDs to generate an ephemeris for</span>
+<span class="sd">        - ``settings`` -- the settings dictionary for rockfinder</span>
+<span class="sd">        - ``obscode`` -- the observatory code for the ephemeris generation. Default **500** (geocentric)</span>
+<span class="sd">        - ``verbose`` -- return extra information with each ephemeris</span>
+
+<span class="sd">    **Return:**</span>
+<span class="sd">        - ``resultList`` -- a list of ordered dictionaries containing the returned ephemerides</span>
+
+<span class="sd">    **Usage:**</span>
+
+<span class="sd">        To generate a an ephemeris for a single epoch run,using ATLAS Haleakala as your observatory:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            from rockfinder import orbfit_ephemeris</span>
+<span class="sd">            eph = orbfit_ephemeris(</span>
+<span class="sd">                log=log,</span>
+<span class="sd">                objectId=1,</span>
+<span class="sd">                obscode=&quot;T05&quot;</span>
+<span class="sd">                mjd=57916.,</span>
+<span class="sd">            )</span>
+
+<span class="sd">        or to generate an ephemeris for multiple epochs:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            from rockfinder import orbfit_ephemeris</span>
+<span class="sd">            eph = orbfit_ephemeris(</span>
+<span class="sd">                log=log,</span>
+<span class="sd">                objectId=&quot;ceres&quot;,</span>
+<span class="sd">                mjd=[57916.1,57917.234,57956.34523]</span>
+<span class="sd">                verbose=True</span>
+<span class="sd">            )</span>
+
+<span class="sd">        Note by passing `verbose=True` the essential ephemeris data is supplimented with some extra data</span>
+
+<span class="sd">        It&#39;s also possible to pass in an array of object IDs:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            from rockfinder import orbfit_ephemeris</span>
+<span class="sd">            eph = orbfit_ephemeris(</span>
+<span class="sd">                log=log,</span>
+<span class="sd">                objectId=[1,5,03547,&quot;Shikoku&quot;],</span>
+<span class="sd">                mjd=[57916.1,57917.234,57956.34523]</span>
+<span class="sd">            )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;starting the ``orbfit_ephemeris`` function&#39;</span><span class="p">)</span>
+
+    <span class="c1"># MAKE SURE MJDs ARE IN A LIST</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mjd</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">mjdList</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">mjd</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mjdList</span> <span class="o">=</span> <span class="n">mjd</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objectId</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">objectList</span> <span class="o">=</span> <span class="p">[</span><span class="n">objectId</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">objectList</span> <span class="o">=</span> <span class="n">objectId</span>
+
+    <span class="n">ephem</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;path to ephem binary&quot;</span><span class="p">]</span>
+    <span class="n">home</span> <span class="o">=</span> <span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objectList</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mjdList</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;&#39;&quot;</span> <span class="ow">in</span> <span class="n">o</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="si">%(ephem)s</span><span class="s2"> </span><span class="si">%(obscode)s</span><span class="s2"> </span><span class="si">%(m)s</span><span class="s2"> &quot;</span><span class="si">%(o)s</span><span class="s2">&quot; &quot;&quot;&quot;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="si">%(ephem)s</span><span class="s2"> </span><span class="si">%(obscode)s</span><span class="s2"> </span><span class="si">%(m)s</span><span class="s2"> &#39;</span><span class="si">%(o)s</span><span class="s2">&#39;&quot;&quot;&quot;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">()</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;output: </span><span class="si">%(stdout)s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">())</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stderr</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">stderr</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">15</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="n">stderr</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">stderr</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">stderr</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">elif</span> <span class="s2">&quot;!!WARNING! WARNING! WARNING! WARNING!!&quot;</span> <span class="ow">in</span> <span class="n">stdout</span><span class="p">:</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">stdout</span><span class="p">)</span>
+                <span class="nb">print</span> <span class="s2">&quot;</span><span class="si">%(o)s</span><span class="s2"> was not found in astorb.dat&quot;</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">()</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># SPLIT RESULTS INTO LIST OF DICTIONARIES</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">stdout</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="c1"># CREATE DICTIONARY FROM KEYS AND VALUES</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">v</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">))</span>
+                <span class="n">row</span><span class="p">[</span><span class="s2">&quot;object_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;object_name&quot;</span><span class="p">,</span> <span class="s2">&quot;mjd&quot;</span><span class="p">,</span> <span class="s2">&quot;ra_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;dec_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;apparent_mag&quot;</span><span class="p">,</span> <span class="s2">&quot;observer_distance&quot;</span><span class="p">,</span> <span class="s2">&quot;heliocentric_distance&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;phase_angle&quot;</span><span class="p">,</span>  <span class="s2">&quot;obscode&quot;</span><span class="p">,</span> <span class="s2">&quot;sun_obs_target_angle&quot;</span><span class="p">,</span> <span class="s2">&quot;galactic_latitude&quot;</span><span class="p">,</span> <span class="s2">&quot;ra_arcsec_per_hour&quot;</span><span class="p">,</span> <span class="s2">&quot;dec_arcsec_per_hour&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;object_name&quot;</span><span class="p">,</span> <span class="s2">&quot;mjd&quot;</span><span class="p">,</span> <span class="s2">&quot;ra_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;dec_deg&quot;</span><span class="p">,</span> <span class="s2">&quot;apparent_mag&quot;</span><span class="p">,</span> <span class="s2">&quot;observer_distance&quot;</span><span class="p">,</span> <span class="s2">&quot;heliocentric_distance&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;phase_angle&quot;</span><span class="p">]</span>
+
+    <span class="c1"># ORDER THE RESULTS</span>
+    <span class="n">resultList</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+
+        <span class="n">orderDict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">({})</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+            <span class="n">orderDict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">resultList</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">orderDict</span><span class="p">)</span>
+
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;completed the ``orbfit_ephemeris`` function&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">resultList</span></div>
+
+    <span class="c1"># xt-class-method</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Dave Young.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'v0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

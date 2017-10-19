@@ -36,4 +36,5 @@ Functions
    :toctree: _autosummary
    :nosignatures:
 
-   rockfinder.whereami 
+   rockfinder.jpl_horizons_ephemeris
+   rockfinder.orbfit_ephemeris 

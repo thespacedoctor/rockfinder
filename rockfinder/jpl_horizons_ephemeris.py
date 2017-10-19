@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 # encoding: utf-8
 """
-*Given a known solar-system object ID (human-readable name, MPC number or MPC packed format) and one or more specific epochs, return the calculated ephemerides*
+*Given a known solar-system object ID (human-readable name, MPC number or MPC packed format) or list of names and one or more specific epochs, return the calculated ephemerides*
 
 :Author:
     David Young
@@ -21,17 +21,19 @@ import collections
 import copy
 
 
-def whereami(
+def jpl_horizons_ephemeris(
         log,
         objectId,
         mjd,
+        obscode=500,
         verbose=False):
     """Given a known solar-system object ID (human-readable name, MPC number or MPC packed format) and one or more specific epochs, return the calculated ephemerides 
 
     **Key Arguments:**
         - ``log`` -- logger
-        - ``objectId`` -- human-readable name, MPC number or MPC packed format id of the solar-system object
+        - ``objectId`` -- human-readable name, MPC number or MPC packed format id of the solar-system object or list of names
         - ``mjd`` -- a single MJD, or a list of up to 10,000 MJDs to generate an ephemeris for
+        - ``obscode`` -- the observatory code for the ephemeris generation. Default **500** (geocentric)
         - ``verbose`` -- return extra information with each ephemeris
 
     **Return:**
@@ -39,23 +41,24 @@ def whereami(
 
     **Usage:**
 
-        To generate a an ephemeris for a single epoch run:
+        To generate a an ephemeris for a single epoch run, using ATLAS Haleakala as your observatory:
 
         .. code-block:: python 
 
-            from rockfinder import whereami
-            eph = whereami(
+            from rockfinder import jpl_horizons_ephemeris
+            eph = jpl_horizons_ephemeris(
                 log=log,
                 objectId=1,
                 mjd=57916.,
+                obscode='T05'
             )
 
         or to generate an ephemeris for multiple epochs:
 
         .. code-block:: python 
 
-            from rockfinder import whereami
-            eph = whereami(
+            from rockfinder import jpl_horizons_ephemeris
+            eph = jpl_horizons_ephemeris(
                 log=log,
                 objectId="ceres",
                 mjd=[57916.1,57917.234,57956.34523]
@@ -68,14 +71,14 @@ def whereami(
 
         .. code-block:: python 
 
-            from rockfinder import whereami
-            eph = whereami(
+            from rockfinder import jpl_horizons_ephemeris
+            eph = jpl_horizons_ephemeris(
                 log=log,
                 objectId=[1,5,03547,"Shikoku","K10B11A"],
                 mjd=[57916.1,57917.234,57956.34523]
             )
     """
-    log.info('starting the ``whereami`` function')
+    log.info('starting the ``jpl_horizons_ephemeris`` function')
 
     # MAKE SURE MJDs ARE IN A LIST
     if not isinstance(mjd, list):
@@ -101,8 +104,8 @@ def whereami(
         "COMMAND": "",
         "OBJ_DATA": "'NO'",
         "MAKE_EPHEM": "'YES'",
-        "TABLE_TYPE": "'OBS'",
-        "CENTER": "'T05'",
+        "TABLE_TYPE": "'OBSERVER'",
+        "CENTER": "'%(obscode)s'" % locals(),
         "TLIST": mjd,
         "QUANTITIES": "'1,3,9,19,20,23,24,36,41,43'",
         "REF_SYSTEM": "'J2000'",
@@ -121,6 +124,7 @@ def whereami(
     resultList = []
     paramList = []
     for objectId in objectList:
+
         requestId = objectId
         # FIX THE COMMAND FOR NUMBERED OBJECTS
         try:
@@ -133,9 +137,28 @@ def whereami(
         theseparams["COMMAND"] = objectId
         paramList.append(theseparams)
 
+        # TEST THE URL
+        # try:
+        #     import requests
+        #     response = requests.get(
+        #         url="https://ssd.jpl.nasa.gov/horizons_batch.cgi",
+        #         params=theseparams,
+        #     )
+        #     content = response.content
+        #     status_code = response.status_code
+        #     print response.url
+        # except requests.exceptions.RequestException:
+        #     print('HTTP Request failed')
+        #     sys.exit(0)
+
     rs = [grequests.get("https://ssd.jpl.nasa.gov/horizons_batch.cgi", params=p)
           for p in paramList]
-    returns = grequests.map(rs, size=1)
+
+    def exception_handler(request, exception):
+        print "Request failed"
+        print exception
+
+    returns = grequests.map(rs, size=1, exception_handler=exception_handler)
 
     for result, requestId in zip(returns, objectList):
         r = result.content
@@ -149,7 +172,20 @@ def whereami(
         if not match:
             log.warning(
                 "Horizons could not find a match for `%(requestId)s`" % locals())
-            print result.url
+            objectDict = {}
+            for k in keys:
+                v = None
+                objectDict[k] = v
+
+            objectDict["objectId"] = requestId + " - NOT FOUND"
+            objectDict["requestId"] = requestId
+            objectDict["mjd"] = None
+
+            orderDict = collections.OrderedDict({})
+            for i in order:
+                orderDict[i] = objectDict[i]
+
+            resultList.append(orderDict)
             continue
 
         horizonsId = match.group(1).replace("(", "").replace(")", "").strip()
@@ -160,11 +196,21 @@ def whereami(
             flags=re.S  # re.S
         )
 
+        keys2 = copy.deepcopy(keys)
+        order2 = copy.deepcopy(order)
+        if "S-brt," not in r:
+            keys2.remove("surface_brightness")
+            try:
+                order2.remove("surface_brightness")
+            except:
+                pass
+
         lines = match.group(1).split("\n")
         for line in lines:
+
             vals = line.split(",")
             objectDict = {}
-            for k, v in zip(keys, vals):
+            for k, v in zip(keys2, vals):
                 v = v.strip().replace("/", "")
                 try:
                     v = float(v)
@@ -177,10 +223,10 @@ def whereami(
             objectDict["requestId"] = requestId
 
             orderDict = collections.OrderedDict({})
-            for i in order:
+            for i in order2:
                 orderDict[i] = objectDict[i]
 
             resultList.append(orderDict)
 
-    log.info('completed the ``whereami`` function')
+    log.info('completed the ``jpl_horizons_ephemeris`` function')
     return resultList

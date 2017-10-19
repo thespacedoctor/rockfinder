@@ -202,8 +202,11 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="_autosummary/rockfinder.whereami.html#rockfinder.whereami" title="rockfinder.whereami"><code class="xref py py-obj docutils literal"><span class="pre">rockfinder.whereami</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="_autosummary/rockfinder.jpl_horizons_ephemeris.html#rockfinder.jpl_horizons_ephemeris" title="rockfinder.jpl_horizons_ephemeris"><code class="xref py py-obj docutils literal"><span class="pre">rockfinder.jpl_horizons_ephemeris</span></code></a></td>
 <td>Given a known solar-system object ID (human-readable name, MPC number or MPC packed format) and one or more specific epochs, return the calculated ephemerides</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="_autosummary/rockfinder.orbfit_ephemeris.html#rockfinder.orbfit_ephemeris" title="rockfinder.orbfit_ephemeris"><code class="xref py py-obj docutils literal"><span class="pre">rockfinder.orbfit_ephemeris</span></code></a></td>
+<td>Given a known solar-system object ID (human-readable name or MPC number but <em>NOT</em> an MPC packed format) or list of names and one or more specific epochs, return the calculated ephemerides</td>
 </tr>
 </tbody>
 </table>
@@ -264,15 +267,21 @@ are welcomed!</p>
 </div>
 <div class="section" id="command-line-usage">
 <h1>Command-Line Usage<a class="headerlink" href="#command-line-usage" title="Permalink to this headline">  ∞</a></h1>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>Usage:
-    rockfinder where <span class="o">[</span>-e<span class="o">]</span> <span class="o">[</span>csv<span class="p">|</span>md<span class="p">|</span>rst<span class="p">|</span>json<span class="p">|</span>yaml<span class="o">]</span> &lt;objectId&gt; &lt;mjd&gt;...
+<div class="highlight-bash"><div class="highlight"><pre><span></span>rockfinder can be used to generate ephemerides <span class="k">for</span> your favourite asteroids
 
+Usage:
+    rockfinder where <span class="o">[</span>-eo<span class="o">]</span> <span class="o">[</span>csv<span class="p">|</span>md<span class="p">|</span>rst<span class="p">|</span>json<span class="p">|</span>yaml<span class="o">]</span> &lt;obscode&gt; &lt;objectId&gt; &lt;mjd&gt;
+
+Options:
+    obscode               the observatory code to use <span class="k">for</span> ephemeris generation
     csv                   output results in csv format
     md                    output results as a markdown table
     rst                   output results as a restructured text table
     json                  output results in json format
     yaml                  output results in yaml format
+
     -e, --extra           <span class="k">return</span> extra ephemeris info <span class="o">(</span>verbose<span class="o">)</span>
+    -o, --orbfit          use orbfit instead of JPL to generate ephemerides <span class="o">(</span>requires bespoke orbfit <span class="sb">`</span>ephem<span class="sb">`</span> executable<span class="o">)</span>
     -h, --help            show this <span class="nb">help</span> message
 </pre></div>
 </div>
@@ -371,7 +380,8 @@ rockfinder where <span class="m">00001</span> <span class="m">57967</span>.546
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="autosummary.html#functions">Functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="_autosummary/rockfinder.whereami.html">rockfinder.whereami (<em>function</em>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/rockfinder.jpl_horizons_ephemeris.html">rockfinder.jpl_horizons_ephemeris (<em>function</em>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/rockfinder.orbfit_ephemeris.html">rockfinder.orbfit_ephemeris (<em>function</em>)</a></li>
 </ul>
 </li>
 </ul>
