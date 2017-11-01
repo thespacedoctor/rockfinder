@@ -73,6 +73,29 @@ class test_orbfit_ephemeris(unittest.TestCase):
         )
         print this
 
+    def test_orbfit_ephemeris_w_custom_oe_file_function(self):
+
+        from rockfinder import orbfit_ephemeris
+        this = orbfit_ephemeris(
+            log=log,
+            settings=settings,
+            objectId=1,
+            mjd=57916.,
+            verbose=True,
+            astorbPath=pathToInputDir + "/astorb-partial.dat"
+        )
+        print this
+
+        from rockfinder import orbfit_ephemeris
+        this = orbfit_ephemeris(
+            log=log,
+            settings=settings,
+            objectId=1,
+            mjd=[57916., 57916.1, 57916.2],
+            astorbPath=pathToInputDir + "/astorb-partial.dat"
+        )
+        print this
+
     def test_orbfit_ephemeris_function02(self):
 
         from rockfinder import orbfit_ephemeris

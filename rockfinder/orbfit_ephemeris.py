@@ -25,7 +25,8 @@ def orbfit_ephemeris(
         mjd,
         settings,
         obscode=500,
-        verbose=False):
+        verbose=False,
+        astorbPath=False):
     """Given a known solar-system object ID (human-readable name or MPC number but *NOT* an MPC packed format) or list of names and one or more specific epochs, return the calculated ephemerides
 
     **Key Arguments:**
@@ -35,6 +36,7 @@ def orbfit_ephemeris(
         - ``settings`` -- the settings dictionary for rockfinder
         - ``obscode`` -- the observatory code for the ephemeris generation. Default **500** (geocentric)
         - ``verbose`` -- return extra information with each ephemeris
+        - ``astorbPath`` -- override the default path to astorb.dat orbital elements file
 
     **Return:**
         - ``resultList`` -- a list of ordered dictionaries containing the returned ephemerides
@@ -77,6 +79,19 @@ def orbfit_ephemeris(
                 objectId=[1,5,03547,"Shikoku"],
                 mjd=[57916.1,57917.234,57956.34523]
             )
+
+        And finally you override the default path to astorb.dat orbital elements file by passing in a custom path (useful for passing in a trimmed orbital elements database):
+
+        .. code-block:: python
+
+            from rockfinder import orbfit_ephemeris
+            eph = orbfit_ephemeris(
+                log=log,
+                objectId=[1,5,03547,"Shikoku"],
+                mjd=[57916.1,57917.234,57956.34523],
+                astorbPath="/path/to/astorb.dat"
+            )
+
     """
     log.info('starting the ``orbfit_ephemeris`` function')
 
@@ -97,10 +112,14 @@ def orbfit_ephemeris(
     results = []
     for o in objectList:
         for m in mjdList:
-            if "'" in o:
+            if not isinstance(o, int) and "'" in o:
                 cmd = """%(ephem)s %(obscode)s %(m)s "%(o)s" """ % locals()
             else:
                 cmd = """%(ephem)s %(obscode)s %(m)s '%(o)s'""" % locals()
+
+            if astorbPath:
+                cmd += " '%(astorbPath)s'" % locals()
+
             p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
             stdout, stderr = p.communicate()
             log.debug('output: %(stdout)s' % locals())
