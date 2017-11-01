@@ -134,7 +134,7 @@ def jpl_horizons_ephemeris(
             pass
 
         theseparams = copy.deepcopy(params)
-        theseparams["COMMAND"] = objectId
+        theseparams["COMMAND"] = '"' + objectId + '"'
         paramList.append(theseparams)
 
         # TEST THE URL
