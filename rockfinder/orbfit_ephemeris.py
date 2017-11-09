@@ -17,6 +17,44 @@ from fundamentals import tools
 from subprocess import Popen, PIPE, STDOUT
 from os.path import expanduser
 import collections
+from fundamentals import multiprocess
+
+
+def _generate_one_ephemeris(
+        cmd):
+    """generate one orbfit ephemeris
+
+    **Key Arguments:**
+        - ``cmd`` -- the command to execute [cmd, object]
+
+    **Return:**
+        - ``result`` -- the single ephemeris
+    """
+    p = Popen(cmd[0], stdout=PIPE, stderr=PIPE, shell=True)
+    stdout, stderr = p.communicate()
+    if len(stderr) and len(stderr.split()) != 15:
+        print stderr, len(stderr.split())
+        return None
+    elif "!!WARNING! WARNING! WARNING! WARNING!!" in stdout:
+        print "%(stdout)s was not found in astorb.dat" % locals()
+        return None
+
+    # SPLIT RESULTS INTO LIST OF DICTIONARIES
+    r = stdout.strip().split("\n")
+    keys = r[0].strip().split(',')
+    lines = r[1:]
+    for l in lines:
+        # CREATE DICTIONARY FROM KEYS AND VALUES
+        values = l.strip().split(',')
+        for k, v in zip(keys, values):
+            v = v.strip().replace("/", "")
+            try:
+                v = float(v)
+            except:
+                pass
+        result = dict(zip(keys, values))
+        result["object_name"] = cmd[1]
+    return result
 
 
 def orbfit_ephemeris(
@@ -110,6 +148,7 @@ def orbfit_ephemeris(
     home = expanduser("~")
 
     results = []
+    cmdList = []
     for o in objectList:
         for m in mjdList:
             if not isinstance(o, int) and "'" in o:
@@ -120,34 +159,11 @@ def orbfit_ephemeris(
             if astorbPath:
                 cmd += " '%(astorbPath)s'" % locals()
 
-            p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
-            stdout, stderr = p.communicate()
-            log.debug('output: %(stdout)s' % locals())
-            if len(stderr) and len(stderr.split()) != 15:
-                print stderr, len(stderr.split())
-                log.error(stderr)
-                continue
-            elif "!!WARNING! WARNING! WARNING! WARNING!!" in stdout:
-                log.error(stdout)
-                print "%(o)s was not found in astorb.dat" % locals()
-                continue
+            cmdList.append([cmd, o])
 
-            # SPLIT RESULTS INTO LIST OF DICTIONARIES
-            r = stdout.strip().split("\n")
-            keys = r[0].strip().split(',')
-            lines = r[1:]
-            for l in lines:
-                # CREATE DICTIONARY FROM KEYS AND VALUES
-                values = l.strip().split(',')
-                for k, v in zip(keys, values):
-                    v = v.strip().replace("/", "")
-                    try:
-                        v = float(v)
-                    except:
-                        pass
-                row = dict(zip(keys, values))
-                row["object_name"] = str(o)
-                results.append(row)
+    # DEFINE AN INPUT ARRAY
+    results = multiprocess(log=log, function=_generate_one_ephemeris,
+                           inputArray=cmdList)
 
     if verbose == True:
         order = ["object_name", "mjd", "ra_deg", "dec_deg", "apparent_mag", "observer_distance", "heliocentric_distance",
@@ -159,6 +175,8 @@ def orbfit_ephemeris(
     # ORDER THE RESULTS
     resultList = []
     for r in results:
+        if not r:
+            continue
 
         orderDict = collections.OrderedDict({})
         for i in order:

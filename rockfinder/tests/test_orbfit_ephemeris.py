@@ -102,7 +102,7 @@ class test_orbfit_ephemeris(unittest.TestCase):
         this = orbfit_ephemeris(
             log=log,
             settings=settings,
-            objectId=[1, 2, 3, 4, "K10B11A"],
+            objectId=range(1500),
             mjd=57916.,
             verbose=True
         )
