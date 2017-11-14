@@ -17,7 +17,7 @@ from fundamentals import tools
 from subprocess import Popen, PIPE, STDOUT
 from os.path import expanduser
 import collections
-from fundamentals import multiprocess
+from fundamentals import fmultiprocess
 
 
 def _generate_one_ephemeris(
