@@ -32,6 +32,10 @@ def _generate_one_ephemeris(
     """
     p = Popen(cmd[0], stdout=PIPE, stderr=PIPE, shell=True)
     stdout, stderr = p.communicate()
+
+    p.stdout.close()
+    p.stderr.close()
+
     if len(stderr) and len(stderr.split()) != 15:
         print stderr, len(stderr.split())
         return None
