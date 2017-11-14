@@ -162,8 +162,8 @@ def orbfit_ephemeris(
             cmdList.append([cmd, o])
 
     # DEFINE AN INPUT ARRAY
-    results = multiprocess(log=log, function=_generate_one_ephemeris,
-                           inputArray=cmdList)
+    results = fmultiprocess(log=log, function=_generate_one_ephemeris,
+                            inputArray=cmdList)
 
     if verbose == True:
         order = ["object_name", "mjd", "ra_deg", "dec_deg", "apparent_mag", "observer_distance", "heliocentric_distance",
