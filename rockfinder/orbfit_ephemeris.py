@@ -18,6 +18,7 @@ from subprocess import Popen, PIPE, STDOUT
 from os.path import expanduser
 import collections
 from fundamentals import fmultiprocess
+from psutil import cpu_count
 
 
 def _generate_one_ephemeris(
@@ -28,37 +29,37 @@ def _generate_one_ephemeris(
         - ``cmd`` -- the command to execute [cmd, object]
 
     **Return:**
-        - ``result`` -- the single ephemeris
+        - ``results`` -- the single ephemeris results
     """
-    p = Popen(cmd[0], stdout=PIPE, stderr=PIPE, shell=True)
-    stdout, stderr = p.communicate()
+    results = []
+    for c in cmd:
+        p = Popen(c[0], stdout=PIPE, stderr=PIPE, shell=True)
+        stdout, stderr = p.communicate()
 
-    p.stdout.close()
-    p.stderr.close()
+        if len(stderr) and len(stderr.split()) != 15:
+            print stderr, len(stderr.split())
+            return None
+        elif "!!WARNING! WARNING! WARNING! WARNING!!" in stdout:
+            print "%(stdout)s was not found in astorb.dat" % locals()
+            return None
 
-    if len(stderr) and len(stderr.split()) != 15:
-        print stderr, len(stderr.split())
-        return None
-    elif "!!WARNING! WARNING! WARNING! WARNING!!" in stdout:
-        print "%(stdout)s was not found in astorb.dat" % locals()
-        return None
-
-    # SPLIT RESULTS INTO LIST OF DICTIONARIES
-    r = stdout.strip().split("\n")
-    keys = r[0].strip().split(',')
-    lines = r[1:]
-    for l in lines:
-        # CREATE DICTIONARY FROM KEYS AND VALUES
-        values = l.strip().split(',')
-        for k, v in zip(keys, values):
-            v = v.strip().replace("/", "")
-            try:
-                v = float(v)
-            except:
-                pass
-        result = dict(zip(keys, values))
-        result["object_name"] = cmd[1]
-    return result
+        # SPLIT RESULTS INTO LIST OF DICTIONARIES
+        r = stdout.strip().split("\n")
+        keys = r[0].strip().split(',')
+        lines = r[1:]
+        for l in lines:
+            # CREATE DICTIONARY FROM KEYS AND VALUES
+            values = l.strip().split(',')
+            for k, v in zip(keys, values):
+                v = v.strip().replace("/", "")
+                try:
+                    v = float(v)
+                except:
+                    pass
+            result = dict(zip(keys, values))
+            result["object_name"] = c[1]
+            results.append(result)
+    return results
 
 
 def orbfit_ephemeris(
@@ -152,7 +153,8 @@ def orbfit_ephemeris(
     home = expanduser("~")
 
     results = []
-    cmdList = []
+    tmpCmdList = []
+
     for o in objectList:
         for m in mjdList:
             if not isinstance(o, int) and "'" in o:
@@ -163,7 +165,17 @@ def orbfit_ephemeris(
             if astorbPath:
                 cmd += " '%(astorbPath)s'" % locals()
 
-            cmdList.append([cmd, o])
+            tmpCmdList.append((cmd, o))
+
+    def chunks(l, n):
+        """Yield successive n-sized chunks from l."""
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    # BATCH INTO 10s
+    cmdList = [c for c in chunks(tmpCmdList, 10)]
+
+    print cmdList
 
     # DEFINE AN INPUT ARRAY
     results = fmultiprocess(log=log, function=_generate_one_ephemeris,
@@ -178,15 +190,18 @@ def orbfit_ephemeris(
 
     # ORDER THE RESULTS
     resultList = []
-    for r in results:
-        if not r:
+    for r2 in results:
+        if not r2:
             continue
+        for r in r2:
+            if not r:
+                continue
 
-        orderDict = collections.OrderedDict({})
-        for i in order:
-            orderDict[i] = r[i]
+            orderDict = collections.OrderedDict({})
+            for i in order:
+                orderDict[i] = r[i]
 
-        resultList.append(orderDict)
+            resultList.append(orderDict)
 
     log.info('completed the ``orbfit_ephemeris`` function')
     return resultList
