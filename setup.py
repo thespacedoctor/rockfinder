@@ -14,7 +14,8 @@ install_requires = [
     'rockfinder',
     'fundamentals',
     'grequests',
-    'ndg-httpsclient'
+    'ndg-httpsclient',
+    'psutil'
 ]
 
 # READ THE DOCS SERVERS
