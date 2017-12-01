@@ -175,8 +175,6 @@ def orbfit_ephemeris(
     # BATCH INTO 10s
     cmdList = [c for c in chunks(tmpCmdList, 10)]
 
-    print cmdList
-
     # DEFINE AN INPUT ARRAY
     results = fmultiprocess(log=log, function=_generate_one_ephemeris,
                             inputArray=cmdList)
