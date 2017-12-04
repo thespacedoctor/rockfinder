@@ -20,6 +20,8 @@ import collections
 from fundamentals import fmultiprocess
 from psutil import cpu_count
 
+cmdList = []
+
 
 def _generate_one_ephemeris(
         cmd):
@@ -31,6 +33,10 @@ def _generate_one_ephemeris(
     **Return:**
         - ``results`` -- the single ephemeris results
     """
+
+    global cmdList
+    cmd = cmdList[cmd]
+
     results = []
     for c in cmd:
         p = Popen(c[0], stdout=PIPE, stderr=PIPE, shell=True)
@@ -138,6 +144,8 @@ def orbfit_ephemeris(
     """
     log.info('starting the ``orbfit_ephemeris`` function')
 
+    global cmdList
+
     # MAKE SURE MJDs ARE IN A LIST
     if not isinstance(mjd, list):
         mjdList = [str(mjd)]
@@ -177,7 +185,7 @@ def orbfit_ephemeris(
 
     # DEFINE AN INPUT ARRAY
     results = fmultiprocess(log=log, function=_generate_one_ephemeris,
-                            inputArray=cmdList)
+                            inputArray=range(len(cmdList)))
 
     if verbose == True:
         order = ["object_name", "mjd", "ra_deg", "dec_deg", "apparent_mag", "observer_distance", "heliocentric_distance",
