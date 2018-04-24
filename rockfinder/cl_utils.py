@@ -4,9 +4,11 @@
 rockfinder can be used to generate ephemerides for your favourite asteroids
 
 Usage:
-    rockfinder where [-eo] [csv|md|rst|json|yaml] <obscode> <objectId> <mjd>
+    rockfinder init
+    rockfinder where [-eo] [csv|md|rst|json|yaml] <obscode> <objectId> <mjd> [-s <pathToSettingsFile>]
 
 Options:
+    init                  initialise rockfinder and install the default settings
     obscode               the observatory code to use for ephemeris generation
     csv                   output results in csv format
     md                    output results as a markdown table
@@ -17,6 +19,8 @@ Options:
     -e, --extra           return extra ephemeris info (verbose)
     -o, --orbfit          use orbfit instead of JPL to generate ephemerides (requires bespoke orbfit `ephem` executable)
     -h, --help            show this help message
+    -s, --settings        the settings file
+    
 """
 ################# GLOBAL IMPORTS ####################
 
@@ -26,7 +30,7 @@ os.environ['TERM'] = 'vt100'
 import readline
 import glob
 import pickle
-
+from subprocess import Popen, PIPE, STDOUT
 from docopt import docopt
 from fundamentals import tools, times
 from fundamentals.renderer import list_of_dictionaries
@@ -72,6 +76,24 @@ def main(arguments=None):
 
     # CALL FUNCTIONS/OBJECTS
 
+    if init:
+        from os.path import expanduser
+        home = expanduser("~")
+        filepath = home + "/.config/rockfinder/rockfinder.yaml"
+        cmd = """open %(filepath)s""" % locals()
+        p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
+        try:
+            cmd = """open %(filepath)s""" % locals()
+            p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
+        except:
+            pass
+        try:
+            cmd = """start %(filepath)s""" % locals()
+            p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
+        except:
+            pass
+        return
+
     if where and orbfitFlag:
         from rockfinder import orbfit_ephemeris
         eph = orbfit_ephemeris(
@@ -109,8 +131,6 @@ def main(arguments=None):
         output = dataSet.markdown(filepath=None)
     elif rst:
         output = dataSet.reST(filepath=None)
-
-    print output
 
     if "dbConn" in locals() and dbConn:
         dbConn.commit()
