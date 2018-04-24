@@ -1,7 +1,7 @@
 version: 1
 
 # CAHNGE THIS PATH IF NECESSARY
-path to ephem binary: ~/Orbfit5.0/bin/ephem
+path to ephem binary: /Users/Dave/Orbfit5.0/bin/ephem
 
 
 logging settings:
