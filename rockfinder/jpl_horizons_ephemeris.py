@@ -155,13 +155,17 @@ def jpl_horizons_ephemeris(
           for p in paramList]
 
     def exception_handler(request, exception):
-        print "Request failed"
-        print exception
+        print("Request failed")
+        print(exception)
 
     returns = grequests.map(rs, size=1, exception_handler=exception_handler)
 
     for result, requestId in zip(returns, objectList):
-        r = result.content
+        r = result.content.decode()
+        # print(r, type(r))
+        if "Target body name" in r:
+            match = True
+            print(objectId, match)
 
         match = re.search(
             r'Target body name:\s(.*?)\{',

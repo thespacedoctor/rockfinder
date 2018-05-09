@@ -110,7 +110,7 @@ def main(arguments=None):
     elif rst:
         output = dataSet.reST(filepath=None)
 
-    print output
+    print(output)
 
     if "dbConn" in locals() and dbConn:
         dbConn.commit()
