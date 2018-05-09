@@ -142,7 +142,7 @@ def orbfit_ephemeris(
             )
 
     """
-    log.info('starting the ``orbfit_ephemeris`` function')
+    log.debug('starting the ``orbfit_ephemeris`` function')
 
     global cmdList
 
@@ -209,7 +209,7 @@ def orbfit_ephemeris(
 
             resultList.append(orderDict)
 
-    log.info('completed the ``orbfit_ephemeris`` function')
+    log.debug('completed the ``orbfit_ephemeris`` function')
     return resultList
 
     # xt-class-method

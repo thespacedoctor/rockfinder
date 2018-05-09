@@ -78,7 +78,7 @@ def jpl_horizons_ephemeris(
                 mjd=[57916.1,57917.234,57956.34523]
             )
     """
-    log.info('starting the ``jpl_horizons_ephemeris`` function')
+    log.debug('starting the ``jpl_horizons_ephemeris`` function')
 
     # MAKE SURE MJDs ARE IN A LIST
     if not isinstance(mjd, list):
@@ -232,5 +232,5 @@ def jpl_horizons_ephemeris(
 
             resultList.append(orderDict)
 
-    log.info('completed the ``jpl_horizons_ephemeris`` function')
+    log.debug('completed the ``jpl_horizons_ephemeris`` function')
     return resultList
