@@ -116,6 +116,7 @@ def jpl_horizons_ephemeris(
         "TIME_ZONE": "'+00:00'",
         "RANGE_UNITS": "'AU'",
         "SUPPRESS_RANGE_RATE": "'NO'",
+        "SKIP_DAYLT": "'YES'",
         "EXTRA_PREC": "'YES'",
         "CSV_FORMAT": "'YES'",
         "batch": "1",
@@ -129,12 +130,13 @@ def jpl_horizons_ephemeris(
         # FIX THE COMMAND FOR NUMBERED OBJECTS
         try:
             thisId = int(objectId)
-            objectId = "%(thisId)s;" % locals()
+            objectId = "%(thisId)s" % locals()
         except Exception as e:
             pass
 
         theseparams = copy.deepcopy(params)
         theseparams["COMMAND"] = '"' + objectId + '"'
+
         paramList.append(theseparams)
 
         # TEST THE URL
@@ -172,6 +174,18 @@ def jpl_horizons_ephemeris(
         if not match:
             log.warning(
                 "Horizons could not find a match for `%(requestId)s`" % locals())
+            try:
+                import requests
+                response = requests.get(
+                    url="https://ssd.jpl.nasa.gov/horizons_batch.cgi",
+                    params=theseparams,
+                )
+                content = response.content
+                status_code = response.status_code
+                print response.url
+            except requests.exceptions.RequestException:
+                print('HTTP Request failed')
+                sys.exit(0)
             objectDict = {}
             for k in keys:
                 v = None
