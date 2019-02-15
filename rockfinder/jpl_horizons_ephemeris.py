@@ -104,7 +104,7 @@ def jpl_horizons_ephemeris(
         "COMMAND": "",
         "OBJ_DATA": "'NO'",
         "MAKE_EPHEM": "'YES'",
-        "TABLE_TYPE": "'OBSERVER'",
+        "TABLE_TYPE": "'OBS'",
         "CENTER": "'%(obscode)s'" % locals(),
         "TLIST": mjd,
         "QUANTITIES": "'1,3,9,19,20,23,24,36,41,43'",
