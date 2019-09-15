@@ -100,9 +100,9 @@ class test_jpl_horizons_ephemeris(unittest.TestCase):
             )
             this.get()
             assert False
-        except Exception, e:
+        except Exception as e:
             assert True
-            print str(e)
+            print(str(e))
 
         # x-print-testpage-for-pessto-marshall-web-object
 
