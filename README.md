@@ -1,9 +1,14 @@
 rockfinder
 ==========
 
+
+[![](https://zenodo.org/badge/52967103.svg)](https://zenodo.org/badge/latestdoi/52967103) 
+
+
+
 [![Documentation Status](https://readthedocs.org/projects/rockfinder/badge/)](http://rockfinder.readthedocs.io/en/latest/?badge)
 
-[![Coverage Status](https://cdn.rawgit.com/thespacedoctor/rockfinder/master/coverage.svg)](https://cdn.rawgit.com/thespacedoctor/rockfinder/master/htmlcov/index.html)
+[![Coverage Status](https://cdn.jsdelivr.net/gh/thespacedoctor/rockfinder@master/coverage.svg)](https://cdn.jsdelivr.net/gh/thespacedoctor/rockfinder@master/htmlcov/index.html)
 
 *A python package and command-line suite to generate solar-system body
 ephemerides and to determine if specific transient dections are in fact
@@ -102,3 +107,19 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+## How to cite rockfinder
+
+If you use `rockfinder` in your work, please cite using the following BibTeX entry: 
+
+```bibtex
+@software{Young_rockfinder,
+    author = {Young, David R.},
+    doi = {10.5281/zenodo.8038004},
+    license = {GPL-3.0-only},
+    title = {{rockfinder}},
+    url = {https://github.com/thespacedoctor/rockfinder}
+}
+```
+ 

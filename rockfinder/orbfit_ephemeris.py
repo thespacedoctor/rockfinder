@@ -48,6 +48,10 @@ def _generate_one_ephemeris(
         elif "!!WARNING! WARNING! WARNING! WARNING!!" in stdout:
             print "%(stdout)s was not found in astorb.dat" % locals()
             return None
+        elif "fser_propag" in stdout:
+            objectt = c[1]
+            print "object %(objectt)s giving 'fser_propag' error in orbfit" % locals()
+            return None
 
         # SPLIT RESULTS INTO LIST OF DICTIONARIES
         r = stdout.strip().split("\n")
