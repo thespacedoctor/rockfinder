@@ -43,10 +43,10 @@ def _generate_one_ephemeris(
         stdout, stderr = p.communicate()
 
         if len(stderr) and len(stderr.split()) != 15:
-            print stderr, len(stderr.split())
+            print(len(stderr.split()), file=stderr)
             return None
         elif "!!WARNING! WARNING! WARNING! WARNING!!" in stdout:
-            print "%(stdout)s was not found in astorb.dat" % locals()
+            print("%(stdout)s was not found in astorb.dat" % locals())
             return None
         elif "fser_propag" in stdout:
             objectt = c[1]

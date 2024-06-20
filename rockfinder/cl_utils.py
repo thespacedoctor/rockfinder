@@ -131,6 +131,7 @@ def main(arguments=None):
         output = dataSet.markdown(filepath=None)
     elif rst:
         output = dataSet.reST(filepath=None)
+    print(output)
 
     print output
 
